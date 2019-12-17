@@ -1,0 +1,14 @@
+{
+    "extends": [
+        "@smartive/tslint-config"
+    ],
+    "rules": {
+        "ter-indent": [
+            true,
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ]
+    }
+}

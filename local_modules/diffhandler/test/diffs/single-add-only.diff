@@ -1,0 +1,22 @@
+diff --git a/foo.js b/foo.js
+index d5f3857dcd..7c5cc877b0 100644
+--- a/foo.js
++++ b/foo.js
+@@ -10,6 +10,17 @@ function WebGLBackground( renderer, state, objects, premultipliedAlpha ) {
+ 
+ 				};
+ 
++				// enable code injection for non-built-in material
++				Object.defineProperty( boxMesh.material, 'envMap', {
++
++					get: function () {
++
++						return this.uniforms.tCube.value;
++
++					}
++
++				} );
++
+ 				objects.update( boxMesh );
+ 
+ 			}

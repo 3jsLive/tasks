@@ -1,0 +1,44 @@
+{
+  "name": "dochandler",
+  "version": "0.8.0",
+  "description": "Parses HTML files that contain doobDoc tags",
+  "main": "index.js",
+  "scripts": {
+    "build": "pegjs --output src/parser-doobdoc-no-trace.js scripts/grammar-doobdoc-ALL.pegjs",
+    "coverage": "nyc mocha",
+    "lint": "eslint src",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/3botjs/3jsservices.git"
+  },
+  "author": "3botjs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/3botjs/3jsservices/issues"
+  },
+  "homepage": "https://gitlab.com/3botjs/3jsservices#readme",
+  "eslintConfig": {
+    "extends": "mdcs",
+    "parserOptions": {
+      "ecmaVersion": 2018
+    }
+  },
+  "nyc": {
+    "exclude": [
+      "src/parser-doobdoc-no-trace.js",
+      "test/**"
+    ]
+  },
+  "dependencies": {
+    "debug": "^4.1.0",
+    "pegjs": "^0.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-mdcs": "^4.2.3",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0"
+  }
+}

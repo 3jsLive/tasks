@@ -1,0 +1,51 @@
+diff --git a/sources/source_base.js b/sources/source_cosmetics_only.js
+index af27460..6531ff8 100644
+--- a/sources/source_base.js
++++ b/sources/source_cosmetics_only.js
+@@ -10,27 +10,33 @@ function Foo( ) {
+ 
+ }
+ 
+-Object.assign( Foo.prototype, {
++Object.assign(
++	Foo.prototype, {
+ 
+-	method1: function ( a, b ) {
++		method1: function (
++			a,
++			b
++		) {
+ 
+-		method1_call1();
+-		method1_call2();
+-		method1_call3();
++			method1_call1();
++			method1_call2();
++			method1_call3();
+ 
+-	},
++		},
+ 
+-	method2: function () {
++		method2: function () {
+ 
+-		method2_call1();
+-		method2_call2();
++			method2_call1();
++			method2_call2();
+ 
+-	},
++		},
+ 
+-	method3: function () {
++		method3: function () {
+ 
+-		method3_call1();	// inline comment
++			method3_call1();	// inline comment
++
++		}
+ 
+ 	}
+ 
+-} );
++);

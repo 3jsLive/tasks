@@ -1,0 +1,25 @@
+diff --git a/sources/source_base.js b/sources/source_conjoined_diff2.js
+index af27460..6a96f70 100644
+--- a/sources/source_base.js
++++ b/sources/source_conjoined_diff2.js
+@@ -17,10 +17,19 @@ Object.assign( Foo.prototype, {
+ 		method1_call1();
+ 		method1_call2();
+ 		method1_call3();
++		foo();
++		bar();
++		baz();
+ 
+ 	},
+ 
+-	method2: function () {
++	method1_5: function ( ) {
++
++		intermission();
++
++	},
++
++	method2: function ( a ) {
+ 
+ 		method2_call1();
+ 		method2_call2();

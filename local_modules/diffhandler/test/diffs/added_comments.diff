@@ -1,0 +1,20 @@
+diff --git a/sources/source_base.js b/sources/source_added_comments.js
+index af27460..3e3a734 100644
+--- a/sources/source_base.js
++++ b/sources/source_added_comments.js
+@@ -16,6 +16,15 @@ Object.assign( Foo.prototype, {
+ 
+ 		method1_call1();
+ 		method1_call2();
++		// just
++		// adding
++		// some
++		// comments
++		// here
++		// to
++		// test
++		// the
++		// comment-detector
+ 		method1_call3();
+ 
+ 	},

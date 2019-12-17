@@ -1,0 +1,15 @@
+diff --git a/sources/source_base.js b/sources/source_comment_modified2.js
+index af27460..f05c460 100644
+--- a/sources/source_base.js
++++ b/sources/source_comment_modified2.js
+@@ -1,7 +1,8 @@
+ /*
+ 	Comment here
+-	multiline
+-	last one
++	m-m-m-multiline
++    last one
++    for reals this time
+ */
+ function Foo( ) {
+ 

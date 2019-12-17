@@ -1,0 +1,38 @@
+[
+	{
+		"type": "LinkTag",
+		"url": "http://en.wikipedia.org/wiki/Universally_unique_identifier",
+		"text": "UUID",
+		"location": {
+			"start": {
+				"offset": 7303,
+				"line": 196,
+				"column": 3
+			},
+			"end": {
+				"offset": 7373,
+				"line": 196,
+				"column": 73
+			}
+		},
+		"source": "[link:http://en.wikipedia.org/wiki/Universally_unique_identifier UUID]"
+	},
+	{
+		"type": "LinkTag",
+		"url": "https://github.com/mrdoob/three.js/blob/master/src/[path].js",
+		"text": "src/[path].js",
+		"location": {
+			"start": {
+				"offset": 13485,
+				"line": 360,
+				"column": 3
+			},
+			"end": {
+				"offset": 13566,
+				"line": 360,
+				"column": 84
+			}
+		},
+		"source": "[link:https://github.com/mrdoob/three.js/blob/master/src/[path].js src/[path].js]"
+	}
+]

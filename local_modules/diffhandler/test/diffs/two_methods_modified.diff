@@ -1,0 +1,20 @@
+diff --git a/sources/source_base.js b/sources/source_two_methods_modified.js
+index af27460..649e3e7 100644
+--- a/sources/source_base.js
++++ b/sources/source_two_methods_modified.js
+@@ -15,7 +15,6 @@ Object.assign( Foo.prototype, {
+ 	method1: function ( a, b ) {
+ 
+ 		method1_call1();
+-		method1_call2();
+ 		method1_call3();
+ 
+ 	},
+@@ -24,6 +23,7 @@ Object.assign( Foo.prototype, {
+ 
+ 		method2_call1();
+ 		method2_call2();
++		method2_call3();
+ 
+ 	},
+ 

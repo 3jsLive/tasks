@@ -1,0 +1,19 @@
+{
+  "name": "listfiles",
+  "version": "0.7.1",
+  "description": "Read examples/files.js or docs/list.js and return their contents as dictionaries, without using eval() or similar",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/3botjs/listfiles.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "3botjs",
+  "license": "ISC",
+  "dependencies": {
+    "rc": "^1.2.8",
+    "signale": "^1.3.0-fork-2"
+  }
+}

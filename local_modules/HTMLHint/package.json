@@ -1,0 +1,9 @@
+{
+  "name": "htmlhint",
+  "version": "0.11.0-fork",
+  "description": "Fork of HTMLHint with JSLint and CSSLint disabled",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

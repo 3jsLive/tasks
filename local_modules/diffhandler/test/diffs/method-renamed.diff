@@ -1,0 +1,13 @@
+diff --git a/sources/source_base.js b/sources/source_method_renamed.js
+index af27460..f1e996a 100644
+--- a/sources/source_base.js
++++ b/sources/source_method_renamed.js
+@@ -12,7 +12,7 @@ function Foo( ) {
+ 
+ Object.assign( Foo.prototype, {
+ 
+-	method1: function ( a, b ) {
++	method1_renamed: function ( a, b ) {
+ 
+ 		method1_call1();
+ 		method1_call2();

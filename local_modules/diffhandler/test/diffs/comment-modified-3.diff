@@ -1,0 +1,22 @@
+diff --git a/sources/source_base.js b/sources/source_comment_modified3.js
+index af27460..ec4dc19 100644
+--- a/sources/source_base.js
++++ b/sources/source_comment_modified3.js
+@@ -1,7 +1,7 @@
+ /*
+ 	Comment here
+ 	multiline
+-	last one
++    last one
+ */
+ function Foo( ) {
+ 
+@@ -29,7 +29,7 @@ Object.assign( Foo.prototype, {
+ 
+ 	method3: function () {
+ 
+-		method3_call1();	// inline comment
++		method3_call1();	// inline comment modified
+ 
+ 	}
+ 

@@ -1,0 +1,16 @@
+diff --git a/sources/source_base.js b/sources/source_uneven_changes.js
+index af27460..2f72e89 100644
+--- a/sources/source_base.js
++++ b/sources/source_uneven_changes.js
+@@ -6,7 +6,10 @@
+ function Foo( ) {
+ 
+ 	Foo.function1();
+-	Foo.function2();
++	Foo.renamed();
++	Foo.added1();
++	Foo.added2();
++	Foo.added3();
+ 
+ }
+ 
