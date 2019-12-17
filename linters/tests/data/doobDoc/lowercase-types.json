@@ -1,0 +1,8 @@
+{
+	"hit": [
+		"[PAGE:foo bar]"
+	],
+	"miss": [
+		"[page:foo bar]"
+	]
+}

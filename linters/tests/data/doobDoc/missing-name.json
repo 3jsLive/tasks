@@ -1,0 +1,26 @@
+{
+	"hit": [
+		"[page:]",
+		"[page: ]",
+		"[page: invalid]",
+		"[page: invalid ]",
+		"[member:]",
+		"[member: ]",
+		"[member: foo]",
+		"[member: foo bar]",
+		"[example:]",
+		"[example: ]",
+		"[example: bad]",
+		"[example: bad ]",
+		"[example: bad bad]"
+	],
+	"miss": [
+		"[page:valid]",
+		"[page:valid valid]",
+		"[member:foo]",
+		"[member:foo bar]",
+		"[member:foo bar ]",
+		"[example:fine]",
+		"[example:fine fine]"
+	]
+}

@@ -1,0 +1,23 @@
+{
+  "errors": [],
+  "results": {
+    "docs/faulty.html": {
+      "errors": [],
+      "results": [
+        {
+          "col": 2,
+          "evidence": "\t</body>",
+          "line": 237,
+          "message": "Tag must be paired, missing: [ </p></p></p> ], start tag match failed [ <p> ] on line 183.",
+          "raw": "</body>",
+          "rule": {
+            "description": "Tag must be paired.",
+            "id": "tag-pair",
+            "link": "https://github.com/thedaviddias/HTMLHint/wiki/tag-pair"
+          },
+          "type": "error"
+        }
+      ]
+    }
+  }
+}

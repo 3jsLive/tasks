@@ -1,0 +1,30 @@
+{
+	"hit": [
+		"[link:https://github.com/?f=should%20work]",
+		"[link:http://gith|ub.com foo]",
+		"[link:http://gith\"ub.com b!r foo]",
+		"[link:http://gith!ub.com f!o]",
+		"[link:http://gith&ub.com bar f!o]",
+		"[link:http://gith§ub.com bar foo]",
+		"[link:http://gith$ub.com bar foo]",
+		"[link:https://medium.com/@soffritti.pierfrancesco/glossy-spheres-in-three-js-bfd2785d4857]"
+	],
+	"miss": [
+		"[link:https://example.com]",
+		"[link:https://example.com/folder/]",
+		"[link:https://example.com/folder/file.html]",
+		"[link:https://example.com/ validTitle]",
+		"[link:https://example.com/ in§validTitle]",
+		"[link:https://example.com/ validTitle in§validTitle]",
+		"[link:https://example.com/ in§validTitle validTitle]",
+		"[link:https://example.com/i.html#foo validTitle]",
+		"[link:https://example.com/i.html#foo in§validTitle]",
+		"[link:https://caniuse.com/#feat=webgl Can I use WebGL]",
+		"[link:http://w.com/i.html#foo]",
+		"[link:https://w.com/i.html#foo]",
+		"[link:https://github.com/mrdoob/three.js/blob/master/src/lights/[name].js]",
+		"[link:https://github.com/mrdoob/three.js/blob/master/src/lights/[name].js src/ligh,ts/[name].js]",
+		"[link:https://github.com/mrdoob/three.js/blob/master/src/[path].js]",
+		"[link:https://github.com/mrdoob/three.js/blob/master/src/[path].js src/[path].js]"
+	]
+}

@@ -1,0 +1,49 @@
+{
+	"name": "services-linters",
+	"version": "0.8.0",
+	"description": "ci.3js.dev service workers: linters",
+	"main": "index.js",
+	"scripts": {
+		"test": "mocha tests/"
+	},
+	"repository": {
+		"type": "git",
+		"url": "todo"
+	},
+	"eslintConfig": {
+		"extends": "mdcs",
+		"parserOptions": {
+			"ecmaVersion": 2018,
+			"ecmaFeatures": {
+				"impliedStrict": true
+			}
+		},
+		"env": {
+			"node": true,
+			"mocha": true
+		}
+	},
+	"author": "3botjs",
+	"license": "ISC",
+	"dependencies": {
+		"@typescript-eslint/eslint-plugin": "^2.5.0",
+		"@typescript-eslint/parser": "^2.5.0",
+		"bluebird": "^3.7.1",
+		"eslint": "^6.5.1",
+		"eslint-config-mdcs": "^4.2.3",
+		"eslint-plugin-html": "^6.0.0",
+		"glob": "^7.1.5",
+		"htmlhint": "file:../local_modules/HTMLHint",
+		"htmlparser2": "^3.10.1",
+		"json-stable-stringify": "^1.0.1",
+		"listfiles": "file:../local_modules/listfiles",
+		"signale": "^1.4.0",
+		"stylelint": "^10.1.0",
+		"stylelint-config-recommended": "^2.2.0",
+		"typescript": "^3.6.4"
+	},
+	"devDependencies": {
+		"@types/bluebird": "^3.5.28",
+		"mocha": "^6.2.2"
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"hit": [
+		"[page:Boolean vertexTextures]: *true* if [property:Integer maxVertexTextures] is greater",
+		"The same choices are available as for [property:number wrapS].<br /><br />"
+	],
+	"miss": [
+		"<h3>[property:Boolean Foo] Bar</h3>"
+	]
+}

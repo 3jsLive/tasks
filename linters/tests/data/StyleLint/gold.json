@@ -1,0 +1,16 @@
+{
+	"errors": [],
+	"results": {
+		"faulty.html": {
+			"errors": [],
+			"results": [
+				{
+					"line": 11,
+					"message": "Unexpected shorthand \"background\" after \"background-color\" (declaration-block-no-shorthand-property-overrides)",
+					"ruleId": "declaration-block-no-shorthand-property-overrides",
+					"severity": "error"
+				}
+			]
+		}
+	}
+}

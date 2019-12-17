@@ -1,0 +1,9 @@
+{
+	"hit": [
+		"[method:Boolean intersectsObject]( [page:foo object] )",
+		"[method:Boolean intersectsObject]( object )"
+	],
+	"miss": [
+		"[method:Boolean intersectsObject]( [param:Object3D object] )"
+	]
+}

@@ -1,0 +1,28 @@
+{
+	"hit": [
+		"[member:$invalid]",
+		"[member:in§valid]",
+		"[member:in§valid%twice]",
+		"[member:in$va%lid %titlecl$ean]",
+		"[member:in$valid titleclean]",
+		"[member:invalid$]",
+		"[page:$invalid]",
+		"[page:in_§valid]",
+		"[page:in§valid%twice]",
+		"[page:in$valid titleclean]",
+		"[page:invalid$]"
+	],
+	"miss": [
+		"[member:valid]",
+		"[member:val_id]",
+		"[member:v99_id]",
+		"[member:valid $despite§symbols!]",
+		"[member:foo_bar_baz] - Foo [page:L.L]",
+		"[page:valid]",
+		"[page:val_id]",
+		"[page:v99_id]",
+		"[page:valid $despite§symbols!]",
+		"[page:foo_bar_baz] - Foo [page:L.L]",
+		"[page:.val_id]"
+	]
+}

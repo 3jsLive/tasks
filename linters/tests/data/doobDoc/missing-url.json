@@ -1,0 +1,12 @@
+{
+	"hit": [
+		"[link:]",
+		"[link: ]",
+		"[link: invalid]",
+		"[link: invalid ]"
+	],
+	"miss": [
+		"[link:valid]",
+		"[link:valid valid]"
+	]
+}

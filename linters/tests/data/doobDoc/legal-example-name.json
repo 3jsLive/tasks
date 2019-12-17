@@ -1,0 +1,16 @@
+{
+	"hit": [
+		"[example:in§valid]",
+		"[example:$invalid]",
+		"[example:invalid$]",
+		"[example:in§valid%twice]",
+		"[example:in$valid titleclean]"
+	],
+	"miss": [
+		"[example:valid]",
+		"[example:val_id]",
+		"[example:v99_id]",
+		"[example:valid $despite§symbols!]",
+		"[example:foo_bar_baz] - Foo [page:L.L]"
+	]
+}

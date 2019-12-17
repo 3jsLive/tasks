@@ -1,0 +1,26 @@
+{
+	"hit": [
+		"[method:Lut addColorMap] ([param:foo])",
+		"[method:Lut addColorMap] ([param:foo] )",
+		"[method:Lut addColorMap] ( [param:foo])",
+		"[method:null program] ([param:CanvasRenderingContext2D context], [param:Color color])",
+		"[method:Lut addColorMap]([param:foo])",
+		"[method:Lut addColorMap]([param:foo] )",
+		"[method:Lut addColorMap]( [param:foo])",
+		"[method:null program]([param:CanvasRenderingContext2D context], [param:Color color])"
+	],
+	"miss": [
+		"[method:Lut addColorMap]( colorMapName, arrayOfColors )",
+		"[method:Lut addColorMap]()",
+		"[method:Lut addColorMap]( )",
+		"[method:Lut addColorMap](  )",
+		"[method:Lut addColorMap]",
+		"[method:Lut addColorMap]( [param:foo] )",
+		"[method:Lut addColorMap] ( colorMapName, arrayOfColors )",
+		"[method:Lut addColorMap] ()",
+		"[method:Lut addColorMap] ( )",
+		"[method:Lut addColorMap] (  )",
+		"[method:Lut addColorMap]",
+		"[method:Lut addColorMap] ( [param:foo] )"
+	]
+}

@@ -1,0 +1,14 @@
+{
+	"hit": [
+		"[example:f00 b_r b!z]",
+		"[example:foo b!r]",
+		"[example:foo ___ ,,,]",
+		"[example:f!o b!r]"
+	],
+	"miss": [
+		"[example:foo bar]",
+		"[example:f00 b_r baz]",
+		"[example:f__ b:/.- ___]",
+		"[example:f!o bar]"
+	]
+}

@@ -1,0 +1,10 @@
+{
+	"hit": [
+		"[page: ]",
+		"[page: foo]"
+	],
+	"miss": [
+		"[page:foo]",
+		"[page:foo ]"
+	]
+}

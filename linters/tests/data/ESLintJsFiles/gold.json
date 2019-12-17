@@ -1,0 +1,16 @@
+{
+	"errors": [],
+	"results": {
+		"examples/jsm/renderers/Projector.js": {
+			"errors": [],
+			"results": [
+				{
+					"line": 184,
+					"message": "'material' is assigned a value but never used.",
+					"ruleId": "no-unused-vars",
+					"severity": 1
+				}
+			]
+		}
+	}
+}

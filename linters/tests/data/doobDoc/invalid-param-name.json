@@ -1,0 +1,13 @@
+{
+	"hit": [
+		"[param::foo bar]",
+		"[param:foo|bar baz]"
+	],
+	"miss": [
+		"[param:foo]",
+		"[param:foo.bar]",
+		"[param:foo.bar baz]",
+		"[param:foo baz]",
+		"[param:foo bar baz]"
+	]
+}

@@ -1,0 +1,64 @@
+{
+	"errors": [],
+	"results": {
+		"examples/webgl_loader_ldraw.html": {
+			"errors": [],
+			"results": [
+				{
+					"line": 142,
+					"message": "Closing curly brace does not appear on the same line as the subsequent block.",
+					"ruleId": "brace-style",
+					"severity": 2
+				},
+				{
+					"line": 260,
+					"message": "Block must be padded by blank lines.",
+					"ruleId": "padded-blocks",
+					"severity": 2
+				},
+				{
+					"line": 270,
+					"message": "'value' is defined but never used.",
+					"ruleId": "no-unused-vars",
+					"severity": 1
+				},
+				{
+					"line": 278,
+					"message": "Multiple spaces found before ')'.",
+					"ruleId": "no-multi-spaces",
+					"severity": 2
+				},
+				{
+					"line": 282,
+					"message": "Closing curly brace does not appear on the same line as the subsequent block.",
+					"ruleId": "brace-style",
+					"severity": 2
+				},
+				{
+					"line": 288,
+					"message": "Block must be padded by blank lines.",
+					"ruleId": "padded-blocks",
+					"severity": 2
+				},
+				{
+					"line": 290,
+					"message": "Unexpected space before function parentheses.",
+					"ruleId": "space-before-function-paren",
+					"severity": 2
+				},
+				{
+					"line": 297,
+					"message": "Unexpected space before function parentheses.",
+					"ruleId": "space-before-function-paren",
+					"severity": 2
+				},
+				{
+					"line": 297,
+					"message": "'value' is defined but never used.",
+					"ruleId": "no-unused-vars",
+					"severity": 1
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,27 @@
+{
+	"hit": [
+		"[page:foo foo ]",
+		"[page:foo foo bar ]",
+		"[link:https://www.example.com foo ]",
+		"[link:https://www.example.com foo bar ]",
+		"[link:https://www.example.com foo bar baz ]",
+		"[example:bad space ]",
+		"[example:doublebad  doublespace  ]",
+		"[example:with multiple titles ]"
+	],
+	"miss": [
+		"[page:foo foo]",
+		"[page:foo foo bar]",
+		"[link:https://www.example.com]",
+		"[link:https://www.example.com foo]",
+		"[link:https://www.example.com foo bar]",
+		"[link:https://www.example.com/#foo]",
+		"[link:https://www.example.com/#foo bar]",
+		"[link:https://www.example.com/#foo bar baz]",
+		"[link:https://www.example.com ]",
+		"[link:https://www.example.com/#foo ]",
+		"[example:fine here]",
+		"[example:fine as well]",
+		"[example:even   this   is    ok]"
+	]
+}

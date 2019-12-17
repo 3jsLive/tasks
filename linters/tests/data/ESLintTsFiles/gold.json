@@ -1,0 +1,1 @@
+{"errors":[],"results":{"examples/jsm/controls/TransformControls.d.ts":{"errors":[],"results":[{"line":4,"message":"'Vector3' is defined but never used.","ruleId":"@typescript-eslint/no-unused-vars","severity":1},{"line":5,"message":"'Euler' is defined but never used.","ruleId":"@typescript-eslint/no-unused-vars","severity":1}]}}}

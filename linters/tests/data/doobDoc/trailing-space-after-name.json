@@ -1,0 +1,21 @@
+{
+	"hit": [
+		"[page:bad ]",
+		"[page:doublebad  ]",
+		"[member:bad ]",
+		"[member:doublebad  ]",
+		"[example:bad ]",
+		"[example:doublebad  ]"
+	],
+	"miss": [
+		"[page:fine]",
+		"[page:fine too]",
+		"[page:fine    too   here]",
+		"[member:fine]",
+		"[member:fine too]",
+		"[member:fine    too   here]",
+		"[example:fine]",
+		"[example:fine too]",
+		"[example:fine    too   here]"
+	]
+}

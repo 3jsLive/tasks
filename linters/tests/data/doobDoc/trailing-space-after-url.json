@@ -1,0 +1,15 @@
+{
+	"hit": [
+		"[link:http://example.com/ ]",
+		"[link:http://example.com/      ]",
+		"[link:http://e.com/f.html#foo ]"
+	],
+	"miss": [
+		"[link:https://example.com]",
+		"[link:https://example.com/folder/]",
+		"[link:https://example.com/folder/file.html]",
+		"[link:https://example.com/ validTitle]",
+		"[link:https://example.com/ in§validTitle]",
+		"[link:https://e.com/i.html#foo]"
+	]
+}
