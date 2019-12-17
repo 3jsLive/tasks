@@ -1,0 +1,55 @@
+{
+	"errors": [],
+	"results": {
+		"src/cameras/Camera.d.ts": {
+			"errors": [],
+			"results": [
+				{
+					"name": "Camera",
+					"onlyDecl": {
+						"methods": [],
+						"properties": [
+							{
+								"legacy": false,
+								"name": "customDepthMaterial"
+							},
+							{
+								"legacy": false,
+								"name": "customDistanceMaterial"
+							}
+						]
+					},
+					"onlySource": {
+						"methods": [],
+						"properties": [
+							{
+								"legacy": true,
+								"name": "eulerOrder"
+							},
+							{
+								"legacy": true,
+								"name": "getChildByName"
+							},
+							{
+								"legacy": true,
+								"name": "getWorldRotation"
+							},
+							{
+								"legacy": true,
+								"name": "renderDepth"
+							},
+							{
+								"legacy": true,
+								"name": "translate"
+							},
+							{
+								"legacy": true,
+								"name": "useQuaternion"
+							}
+						]
+					}
+				}
+			]
+		}
+	}
+}

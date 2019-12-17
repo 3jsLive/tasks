@@ -1,0 +1,39 @@
+{
+	"errors": [],
+	"results": {
+		"docs/api/en/objects/InstancedMesh.html": {
+			"errors": [],
+			"results": [
+				{
+					"diff": {
+						"methods": [],
+						"properties": [
+							{
+								"decl": {
+									"name": "inBothButDifferent",
+									"type": "number"
+								},
+								"docs": {
+									"name": "inBothButDifferent",
+									"type": "Boolean"
+								}
+							}
+						]
+					},
+					"onlyDecl": {
+						"methods": [],
+						"properties": [
+							"isInstancedMesh"
+						]
+					},
+					"onlyDocs": {
+						"methods": [],
+						"properties": [
+							"onlyInDocs"
+						]
+					}
+				}
+			]
+		}
+	}
+}

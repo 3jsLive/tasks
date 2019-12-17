@@ -1,0 +1,15 @@
+{
+	"errors": [],
+	"results": {
+		"docs/api/foo/test.html": {
+			"errors": [],
+			"results": [
+				{
+					"example": "webgl_non_existing_example",
+					"exists": false,
+					"file": "docs/api/foo/test.html"
+				}
+			]
+		}
+	}
+}

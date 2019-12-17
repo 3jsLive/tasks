@@ -1,0 +1,23 @@
+{
+	"errors": [],
+	"results": {
+		"JavaScript": {
+			"errors": [],
+			"results": [
+				{
+					"file": "src/Foo",
+					"name": "Foo"
+				}
+			]
+		},
+		"TypeScript": {
+			"errors": [],
+			"results": [
+				{
+					"file": "src/Bar",
+					"name": "Bar"
+				}
+			]
+		}
+	}
+}

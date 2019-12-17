@@ -1,0 +1,21 @@
+{
+	"errors": [],
+	"results": {
+		"examples/example-tags.html": {
+			"errors": [],
+			"results": [
+				"https://httpstat.us/400",
+				"https://httpstat.us/401",
+				"https://httpstat.us/403"
+			]
+		},
+		"examples/example-raw.html": {
+			"errors": [],
+			"results": [
+				"https://httpstat.us/400",
+				"https://httpstat.us/401",
+				"https://httpstat.us/403"
+			]
+		}
+	}
+}

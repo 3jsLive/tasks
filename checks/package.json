@@ -1,0 +1,53 @@
+{
+	"name": "services-checks",
+	"version": "0.8.0",
+	"description": "ci.3js.dev service workers: checks",
+	"main": "index.js",
+	"scripts": {
+		"test": "mocha tests/"
+	},
+	"repository": {
+		"type": "git",
+		"url": "todo"
+	},
+	"eslintConfig": {
+		"extends": "mdcs",
+		"parserOptions": {
+			"ecmaVersion": 2018,
+			"ecmaFeatures": {
+				"impliedStrict": true
+			}
+		},
+		"env": {
+			"node": true,
+			"mocha": true
+		}
+	},
+	"author": "3botjs",
+	"license": "ISC",
+	"dependencies": {
+		"acorn": "^7.1.0",
+		"bluebird": "^3.7.1",
+		"chalk": "^2.4.2",
+		"dochandler": "file:../local_modules/dochandler",
+		"esquery": "^1.0.1",
+		"glob": "^7.1.5",
+		"http-server": "^0.11.1",
+		"json-stable-stringify": "^1.0.1",
+		"listfiles": "file:../local_modules/listfiles",
+		"puppeteer": "https://api.github.com/repos/GoogleChrome/puppeteer/tarball/5b34028e63c9532349ac525fa4c14daeada05b94",
+		"rc": "^1.2.8",
+		"signale": "^1.4.0",
+		"timed-cache": "^1.1.2",
+		"ts-morph": "^4.3.2",
+		"typescript": "^3.6.4",
+		"url-exists-deep": "^1.1.1"
+	},
+	"devDependencies": {
+		"@types/bluebird": "^3.5.28",
+		"@types/esquery": "^1.0.0",
+		"eslint": "^6.5.1",
+		"eslint-config-mdcs": "^4.2.3",
+		"mocha": "^6.2.2"
+	}
+}

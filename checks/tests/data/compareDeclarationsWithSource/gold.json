@@ -1,0 +1,80 @@
+{
+	"errors": [],
+	"results": {
+		"src/renderers/shaders/ShaderChunk.js": {
+			"errors": [],
+			"results": [
+				{
+					"onlyDecl": {
+						"methods": [],
+						"properties": [
+							"lights_pars_map",
+							"normal_flip"
+						]
+					},
+					"onlySource": {
+						"methods": [],
+						"properties": [
+							"fog_vertex",
+							"fog_pars_vertex",
+							"gradientmap_pars_fragment",
+							"dithering_fragment",
+							"dithering_pars_fragment",
+							"background_frag",
+							"background_vert",
+							"meshmatcap_frag",
+							"meshmatcap_vert",
+							"sprite_frag",
+							"sprite_vert"
+						]
+					}
+				}
+			]
+		},
+		"src/renderers/shaders/ShaderLib.js": {
+			"errors": [],
+			"results": [
+				{
+					"onlyDecl": {
+						"methods": [],
+						"properties": []
+					},
+					"onlySource": {
+						"methods": [],
+						"properties": []
+					}
+				}
+			]
+		},
+		"src/renderers/shaders/UniformsLib.js": {
+			"errors": [],
+			"results": [
+				{
+					"onlyDecl": {
+						"methods": [],
+						"properties": [
+							"lights.hemisphereLights.properties.skycolor"
+						]
+					},
+					"onlySource": {
+						"methods": [],
+						"properties": [
+							"lights.lightProbe.value",
+							"lights.pointLights.properties.shadowCameraNear",
+							"lights.pointLights.properties.shadowCameraFar",
+							"lights.hemisphereLights.properties.skyColor",
+							"points.alphaMap.value",
+							"sprite.diffuse.value",
+							"sprite.opacity.value",
+							"sprite.center.value",
+							"sprite.rotation.value",
+							"sprite.map.value",
+							"sprite.alphaMap.value",
+							"sprite.uvTransform.value"
+						]
+					}
+				}
+			]
+		}
+	}
+}

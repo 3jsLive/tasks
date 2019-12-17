@@ -1,0 +1,7 @@
+{
+  "name": "three",
+  "version": "0.109.0",
+  "description": "JavaScript 3D library",
+  "main": "build/three.js",
+  "types": "src/Three.d.ts"
+}

@@ -1,0 +1,5 @@
+function Bar( ) {
+
+}
+
+export { Bar };
