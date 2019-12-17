@@ -1,0 +1,48 @@
+{
+	"name": "services-typesearch",
+	"version": "0.8.0",
+	"description": "ci.3js.dev service workers: typeSearch",
+	"main": "index.js",
+	"scripts": {
+		"test": "mocha tests/"
+	},
+	"repository": {
+		"type": "git",
+		"url": "todo"
+	},
+	"eslintConfig": {
+		"extends": "mdcs",
+		"parserOptions": {
+			"ecmaVersion": 2018,
+			"ecmaFeatures": {
+				"impliedStrict": true
+			}
+		},
+		"env": {
+			"node": true,
+			"mocha": true
+		}
+	},
+	"author": "3botjs",
+	"license": "ISC",
+	"dependencies": {
+		"bluebird": "^3.7.1",
+		"get-source": "^1.0.42",
+		"glob": "^7.1.5",
+		"json-stable-stringify": "^1.0.1",
+		"lines-and-columns": "^1.1.6",
+		"listfiles": "file:../local_modules/listfiles",
+		"puppeteer": "^2.0.0",
+		"rc": "^1.2.8",
+		"signale": "^1.4.0",
+		"ts-morph": "^4.3.2"
+	},
+	"devDependencies": {
+		"@cypress/xvfb": "^1.2.4",
+		"@types/bluebird": "^3.5.28",
+		"eslint": "^6.5.1",
+		"eslint-config-mdcs": "^4.2.3",
+		"http-server": "^0.11.1",
+		"mocha": "^6.2.2"
+	}
+}

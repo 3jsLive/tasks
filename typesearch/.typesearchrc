@@ -1,0 +1,21 @@
+{
+	"typesearch": {
+
+		"baseUrl": { "host": "127.0.0.1", "port": 14227 },
+
+		"dataPath": "/home/max/dev/3js.dev/data/typeProfiles",
+
+		"puppeteerOptions": [ "--use-gl=egl", /* "--use-gl=swiftshader", */ "--enable-gpu", "--mute-audio" ],
+
+		// no webaudio, webgl2 and webvr. webgl2 randomly drops context, audio needs interaction first and VR of course needs hardware
+		"validExamplePrefixes": [ "webgl", "svg", "software", "misc", "css3d", "css2d", "raytracing" ],
+
+		// youtube messes with our network-idle detection
+		// offscreencanvas doesn't alwways work and needs a special flag anyway, plus it's not yet modularized
+		"bannedExamples": [ "youtube", "offscreencanvas" ],
+
+		// they overtax the typesearch system
+		"ignoredNamePatterns": [ "draco_wasm_wrapper", "draco_decoder", "jsm/lib", ".min.", "libs/ammo.js" ]
+	}
+
+}
