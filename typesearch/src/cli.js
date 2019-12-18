@@ -2,7 +2,6 @@ const lf = require( 'listfiles' );
 const globalConfig = require( 'rc' )( '3jsdev' );
 const servicesConfig = require( 'rc' )( 'services', globalConfig );
 const config = require( 'rc' )( 'typesearch', servicesConfig );
-const path = require( 'path' );
 
 const TypeProfilingRunner = require( './typeProfilingRunner' );
 
@@ -48,7 +47,7 @@ try {
 
 		workloadUrls = lf.examples( {
 			basePath: threejsRepository,
-			baseUrl: `http://${config.typesearch.baseUrl.host}:${config.typesearch.baseUrl.port}`
+			baseUrl: `http://${config.typesearch.baseUrl.host}:${config.typesearch.baseUrl.port}/`
 		} ).urls.filter( url =>
 			config.typesearch.bannedExamples.every( part => url.includes( part ) === false ) &&
 				config.typesearch.validExamplePrefixes.some( prefix => url.includes( `/${prefix}_` ) === true )
