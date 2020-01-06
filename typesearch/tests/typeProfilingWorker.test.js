@@ -5,9 +5,7 @@ const assert = require( 'assert' );
 const runnerClass = require( `../src/typeProfilingRunner` );
 const HTTPServer = require( 'http-server' );
 
-const globalConfig = require( 'rc' )( '3jsdev' );
-const servicesConfig = require( 'rc' )( 'services', globalConfig );
-const config = require( 'rc' )( 'typesearch', servicesConfig );
+const config = require( 'rc' )( 'tasks' );
 
 const Xvfb = require( '@cypress/xvfb' );
 const Promise = require( 'bluebird' );
@@ -98,7 +96,7 @@ describe( `typeProfilingWorker`, function () {
 
 	after( 'clean up', function () {
 
-		// fs.unlinkSync( `${__dirname}/data/typeProfilingWorker/examples_css3d_sprites.json` );
+		fs.unlinkSync( `${__dirname}/data/typeProfilingWorker/examples_css3d_sprites.json` );
 
 	} );
 
@@ -124,10 +122,10 @@ describe( `typeProfilingWorker`, function () {
 		// even hackier
 		gold.results.result.sort( ( scriptA, scriptB ) => scriptA.url.localeCompare( scriptB.url ) );
 		gold.results.result.forEach( script => script.entries.sort( ( a, b ) => a.offset - b.offset ) );
-		profile[ 0 ].results.result.sort( ( scriptA, scriptB ) => scriptA.url.localeCompare( scriptB.url ) );
-		profile[ 0 ].results.result.forEach( script => script.entries.sort( ( a, b ) => a.offset - b.offset ) );
+		profile.results.result.sort( ( scriptA, scriptB ) => scriptA.url.localeCompare( scriptB.url ) );
+		profile.results.result.forEach( script => script.entries.sort( ( a, b ) => a.offset - b.offset ) );
 
-		assert.deepStrictEqual( profile[ 0 ], gold );
+		assert.deepStrictEqual( profile, gold );
 
 	} );
 

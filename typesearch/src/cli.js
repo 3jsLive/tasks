@@ -1,7 +1,6 @@
 const lf = require( 'listfiles' );
-const globalConfig = require( 'rc' )( '3jsdev' );
-const servicesConfig = require( 'rc' )( 'services', globalConfig );
-const config = require( 'rc' )( 'typesearch', servicesConfig );
+const config = require( 'rc' )( 'tasks' );
+const path = require( 'path' );
 
 const TypeProfilingRunner = require( './typeProfilingRunner' );
 
@@ -62,7 +61,7 @@ try {
 	console.log( 'Init...' );
 
 	const worker = new TypeProfilingRunner(
-		config.typesearch.dataPath,
+		path.join( config.root, config.typesearch.dataPath ),
 		threejsRepository,
 		'build/three.module.js',
 		`http://${config.typesearch.baseUrl.host}:${config.typesearch.baseUrl.port}`

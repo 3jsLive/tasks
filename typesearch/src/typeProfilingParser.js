@@ -7,13 +7,9 @@ const stringify = require( 'json-stable-stringify' );
 const linesAndCols = require( 'lines-and-columns' );
 const signale = require( 'signale' );
 
-const globalConfig = require( 'rc' )( '3jsdev' );
-const servicesConfig = require( 'rc' )( 'services', globalConfig );
-const config = require( 'rc' )( 'typesearch', servicesConfig );
+const config = require( 'rc' )( 'tasks' );
 
 /*
-
-	Formerly 'test_test_tsmorph-als-JS-manipulator.js'
 
 	Takes a collection of typeProfiles and turns them into
 	a JSON with correct references to the functions and parameters

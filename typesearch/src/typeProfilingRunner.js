@@ -5,9 +5,7 @@ const puppeteer = require( 'puppeteer' );
 const stringify = require( 'json-stable-stringify' );
 const signale = require( 'signale' );
 
-const globalConfig = require( 'rc' )( '3jsdev' );
-const servicesConfig = require( 'rc' )( 'services', globalConfig );
-const config = require( 'rc' )( 'typesearch', servicesConfig );
+const config = require( 'rc' )( 'tasks' );
 
 const TypeProfilingWorker = require( './typeProfilingWorker' );
 
@@ -146,7 +144,14 @@ class TypeProfilingRunner {
 
 					this.logger.info( 'Saving...' );
 
-					return fs.promises.writeFile( path.join( this.targetBase, this.crudelyEscapedUrl ), stringify( status ), 'utf-8' )
+					return Promise.each( status, s => {
+
+						const escaped = s.url.replace( this.urlBase, '' ).replace( /\/+/g, '_' ).replace( /^_+/, '' ).replace( '.html', '.json' );
+						this.logger.fav( `Original: ${this.urlBase}` );
+						this.logger.star( `Writing to ${escaped}...` );
+						return fs.promises.writeFile( path.join( this.targetBase, escaped ), stringify( s ), 'utf8' );
+
+					} )
 						.then( () => {
 
 							this.logger.debug( 'Closing browser...' );

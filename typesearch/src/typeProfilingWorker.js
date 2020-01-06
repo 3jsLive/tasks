@@ -7,7 +7,7 @@ const signale = require( 'signale' );
 
 	Type profiling
 	A special mode in Google Chrome where the JS engine logs
-	which types functions and arguments were seen having
+	which types functions and arguments were using
 
 */
 
@@ -41,13 +41,13 @@ class TypeProfilingWorker {
 			the then/catch line, causing the whole program to crash (usually with a SEGV_MAPPER)
 			'skipper' serves as the canary and is used in the Promise.any( [ page.goto, skipper ] )
 			instruction.
-			If we crash in the 'error' listener, skipper is fullfilled and not page.goto
+			If we crash in the 'error' listener, skipper is fulfilled and not page.goto
 			If we don't crash, it's page.goto as usual
 
 			A bit hacky admittedly, but it works and I'm tired :)
 		*/
 		this.skipper = null;
-		this.skipperFullfill = null;
+		this.skipperFulFill = null;
 
 	}
 
@@ -79,7 +79,7 @@ class TypeProfilingWorker {
 
 			this.logger.error( 'Crash error:', e );
 
-			this.skipperFullfill( { url: this.url, status: 'failed' } );
+			this.skipperFulFill( { url: this.url, status: 'failed' } );
 
 			// throw e;
 
@@ -114,10 +114,16 @@ class TypeProfilingWorker {
 
 
 	/**
+	 * As the name implies, waits for a radio silence of at least `this.timeout` milliseconds
+	 * We can't just go by `Loaded` or `DOMContentLoaded` events firing since our tests
+	 * frequently load external assets after the page itself has already finished loading.
+	 * And Puppeteer's inbuilt `networkidle0/2` events are not far-reaching enough.
+	 *
 	 * from https://github.com/GoogleChrome/puppeteer/issues/1353#issuecomment-356561654
 	 */
 	waitForNetworkIdle( ) {
 
+		// time's up, cut everything off and stop profiling
 		const onTimeoutDone = () => {
 
 			if ( ! promise.isFulfilled() ) {
@@ -183,6 +189,7 @@ class TypeProfilingWorker {
 
 			inflight --;
 
+			// not done yet, extend our timeout
 			if ( inflight === this.maxInflightRequests || ! fullyLoaded )
 				timeoutId = setTimeout( onTimeoutDone, this.timeout );
 
@@ -220,7 +227,7 @@ class TypeProfilingWorker {
 
 		const promiseNetworkHasBeenIdle = this.waitForNetworkIdle();
 
-		this.skipper = new Promise( x => this.skipperFullfill = x );
+		this.skipper = new Promise( x => this.skipperFulFill = x );
 
 		// goto url, wait for network idle, collect profile data, report success
 		return Promise.any( [

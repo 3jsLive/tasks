@@ -1,0 +1,38 @@
+{
+
+	// root path
+	"root": "/var/3ci/",
+
+	"typesearch": {
+
+		// host and port for the temporary HTTP server
+		"baseUrl": { "host": "127.0.0.1", "port": 14227 },
+
+		// where to save the results
+		"dataPath": "typesearch/results",
+
+		// default options for headless chrome
+		"puppeteerOptions": [
+			/* "--use-gl=egl", */
+			"--use-gl=swiftshader",
+			"--enable-gpu",
+			"--mute-audio"
+		],
+
+		// valid prefixes for examples
+		// no webaudio, webgl2 and webvr. webgl2 randomly drops context, audio needs interaction first and VR of course needs hardware
+		"validExamplePrefixes": [ "webgl", "svg", "software", "misc", "css3d", "css2d", "raytracing" ],
+
+		// examples containing one or more of bannedExamples strings will be skipped
+		"bannedExamples": [
+			"nearestneighbour", // has a tendency to crash the runner
+			"youtube",          // youtube messes with our network-idle detection
+			"offscreencanvas"   // offscreencanvas doesn't alwways work and needs a special flag anyway, plus it's not yet modularized
+		],
+
+		// script files matching one or more of these are skipped as well, since they tax the profiler too much
+		"ignoredNamePatterns": [ "draco_wasm_wrapper", "draco_decoder", "jsm/lib", ".min.", "libs/ammo.js" ]
+
+	}
+
+}
