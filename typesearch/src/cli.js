@@ -47,7 +47,7 @@ try {
 
 		workloadUrls = lf.examples( {
 			basePath: threejsRepository,
-			baseUrl: `http://${config.typesearch.baseUrl.host}:${config.typesearch.baseUrl.port}/`
+			baseUrl: `http://${config.typesearch.baseUrl.host}:${config.typesearch.baseUrl.port}/examples/`
 		} ).urls.filter( url =>
 			config.typesearch.bannedExamples.every( part => url.includes( part ) === false ) &&
 				config.typesearch.validExamplePrefixes.some( prefix => url.includes( `/${prefix}_` ) === true )
