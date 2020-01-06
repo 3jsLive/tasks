@@ -147,8 +147,6 @@ class TypeProfilingRunner {
 					return Promise.each( status, s => {
 
 						const escaped = s.url.replace( this.urlBase, '' ).replace( /\/+/g, '_' ).replace( /^_+/, '' ).replace( '.html', '.json' );
-						this.logger.fav( `Original: ${this.urlBase}` );
-						this.logger.star( `Writing to ${escaped}...` );
 						return fs.promises.writeFile( path.join( this.targetBase, escaped ), stringify( s ), 'utf8' );
 
 					} )
