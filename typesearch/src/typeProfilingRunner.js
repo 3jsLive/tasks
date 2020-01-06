@@ -138,37 +138,38 @@ class TypeProfilingRunner {
 
 						} );
 
-				} ).then( status => {
+				} )
+					.then( status => {
 
-					this.logger.debug( [ 'No more URLs left. Status report:', ...status.map( s => `${s.status}: ${s.url}` ) ].join( '\n' ) );
+						this.logger.debug( [ 'No more URLs left. Status report:', ...status.map( s => `${s.status}: ${s.url}` ) ].join( '\n' ) );
 
-					this.logger.info( 'Saving...' );
+						this.logger.info( 'Saving...' );
 
-					return Promise.each( status, s => {
+						return Promise.each( status, s => {
 
-						const escaped = s.url.replace( this.urlBase, '' ).replace( /\/+/g, '_' ).replace( /^_+/, '' ).replace( '.html', '.json' );
-						return fs.promises.writeFile( path.join( this.targetBase, escaped ), stringify( s ), 'utf8' );
-
-					} )
-						.then( () => {
-
-							this.logger.debug( 'Closing browser...' );
-
-							return this.browser.close();
+							const escaped = s.url.replace( this.urlBase, '' ).replace( /\/+/g, '_' ).replace( /^_+/, '' ).replace( '.html', '.json' );
+							return fs.promises.writeFile( path.join( this.targetBase, escaped ), stringify( s ), 'utf8' );
 
 						} )
-						.catch( err => this.logger.fatal( err ) );
+							.then( () => {
 
-				} ).then( () => {
+								this.logger.debug( 'Closing browser...' );
 
-					this.logger.info( 'Done' );
+								return this.browser.close();
 
-					return true;
+							} )
+							.catch( err => this.logger.fatal( err ) );
 
-				} );
+					} )
+					.then( () => {
+
+						this.logger.info( 'Done' );
+
+						return true;
+
+					} );
 
 			} )
-
 			.catch( err => this.logger.error( "Launch error >", err ) );
 
 	}
