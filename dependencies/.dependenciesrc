@@ -1,0 +1,34 @@
+{
+	"dependencies": {
+
+		// urlBase
+		"baseUrl": "http://127.0.0.1:14227/",
+
+		// fileBase
+		"fileBase": "/tmp/tmp.9yXEdqGt77/3jsRepository/",
+
+		"shaderLibPath": "src/renderers/shaders/ShaderLib.js",
+		"shaderChunkPath": "src/renderers/shaders/ShaderChunk.js",
+		"uniformsLibPath": "src/renderers/shaders/UniformsLib.js",
+
+		"mainScriptFilename": "three.module.js",
+		"mainScriptPath": "build/three.module.js",
+
+		"examplesFilenameRegex": "(examples\/(?:webgl|webaudio|webvr|css.*?|misc)_.*?\\.html)$",
+
+		"fpsLimit": 300,
+
+		"networkidle": {
+
+			"maxInflightRequests": 0,
+
+			"timeout": 4000
+		},
+
+		"profilerTimeout": 60000,
+
+		"puppeteerOptions": [ "--use-gl=swiftshader", "--enable-gpu", "--mute-audio" ]
+
+	}
+
+}

@@ -1,0 +1,39 @@
+{
+	"name": "@3cidev/tasks-dependencies",
+	"version": "0.5.0",
+	"description": "ci.3ci.dev task: dependencies tracker",
+	"main": "index.js",
+	"eslintConfig": {
+		"extends": "mdcs",
+		"parserOptions": {
+			"ecmaVersion": 2018,
+			"ecmaFeatures": {
+				"impliedStrict": true
+			}
+		},
+		"env": {
+			"node": true,
+			"mocha": true
+		}
+	},
+	"author": "3botjs",
+	"license": "ISC",
+	"dependencies": {
+		"acorn": "^7.1.0",
+		"acorn-walk": "^7.0.0",
+		"bluebird": "^3.7.1",
+		"dochandler": "file:../local_modules/dochandler",
+		"get-source": "^1.0.42",
+		"json-stable-stringify": "^1.0.1",
+		"lines-and-columns": "^1.1.6",
+		"listfiles": "file:../local_modules/listfiles",
+		"puppeteer": "^2.0.0",
+		"rc": "^1.2.8",
+		"signale": "^1.4.0"
+	},
+	"devDependencies": {
+		"@types/bluebird": "^3.5.28",
+		"eslint": "^6.5.1",
+		"eslint-config-mdcs": "^4.2.3"
+	}
+}
