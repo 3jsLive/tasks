@@ -46,7 +46,7 @@
 		// fileBase
 		"fileBase": "/tmp/tmp.9yXEdqGt77/3jsRepository/",
 
-		"resultsPath": "dependencies/results",
+		"resultsBase": "dependencies/results",
 
 		"shaderLibPath": "src/renderers/shaders/ShaderLib.js",
 		"shaderChunkPath": "src/renderers/shaders/ShaderChunk.js",
