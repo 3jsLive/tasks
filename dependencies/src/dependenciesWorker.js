@@ -1,5 +1,4 @@
 const fs = require( 'fs' );
-const getSource = require( 'get-source' );
 const linesAndCols = require( 'lines-and-columns' );
 const Promise = require( 'bluebird' ); // TODO: drop bluebird?
 const signale = require( 'signale' );
@@ -72,7 +71,6 @@ class DependenciesWorker {
 		// FIXME: move from worker to runner? Or at least use modifiedThree?
 		this.source = fs.readFileSync( buildFile, 'utf8' );
 		this.lines = new linesAndCols.default( this.source );
-		this.sourceMapped = getSource( buildFile );
 
 		this.modifiedTHREE = modifiedThree;
 
