@@ -29,9 +29,6 @@ process.on( 'uncaughtException', error => {
 } );
 
 
-
-
-
 class DependenciesWorker {
 
 	/**
@@ -49,6 +46,7 @@ class DependenciesWorker {
 		this.client = null;
 
 		this.logger = signale.scope( 'Worker' );
+		this.logger.config( { displayTimestamp: true } );
 
 		// tracked stuff
 		this.loggedRequests = [];
@@ -79,6 +77,7 @@ class DependenciesWorker {
 		this.modifiedTHREE = modifiedThree;
 
 	}
+
 
 	async tearDownPage() {
 
@@ -258,25 +257,6 @@ class DependenciesWorker {
 							metricsStart: this.metricsStart
 						};
 
-						/* await fs.promises.writeFile(
-							`./statsResults-${this.crudelyEscapedUrl}`,
-							stringify( {
-								file: this.url,
-								results: stats,
-								pageStart: pageStart,
-								now: Date.now(),
-								nowHr: process.hrtime(),
-								sniff: {
-									duration: sniffed_duration,
-									frames: sniffed_frames,
-									started: sniff_started
-								},
-								metrics: metricsHashed,
-								metricsStart: this.metricsStart
-							} ),
-							'utf8'
-						); */
-
 						return true;
 
 					} )
@@ -300,31 +280,6 @@ class DependenciesWorker {
 
 									this.profilerResults = result.result;
 
-									/* // Go thru all coverage-processed scripts
-									for ( const script of result.result ) {
-
-										// console.log( util.inspect( script, false, 4, true ) );
-										// Either the main three.js file
-										if ( new RegExp( '/' + config.dependencies.mainScriptFilename + '$' ).test( script.url ) === true ) {
-
-											this.logger.debug( '3js script.functions.length:', script.functions.length );
-
-											for ( const func of script.functions )
-												this.processThreeJsCoverage( func, this.deps );
-
-										} else if ( this.acceptableScriptUrlsRx.test( script.url ) === true ) {
-
-											// or all *.js files from baseUrl, except those named *.min.js
-
-											this.logger.debug( `other script.functions.length: ${script.functions.length} in ${script.url}` );
-
-											for ( const func of script.functions )
-												this.processOtherCoverage( func, script, this.deps );
-
-										}
-
-									} */
-
 								}
 
 								return this.client.send( 'Profiler.stopPreciseCoverage' );
@@ -345,12 +300,6 @@ class DependenciesWorker {
 								uniforms: this.trackedShaders.UniformsLib
 							}
 						};
-
-						/* return fs.promises.writeFile(
-							`./trackedResults-${this.crudelyEscapedUrl}`,
-							stringify( { file: this.url, results: results } ),
-							'utf8'
-						); */
 
 					} )
 					.catch( err => this.logger.error( 'ERR final collection failed >', err ) );
