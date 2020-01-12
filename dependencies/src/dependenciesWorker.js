@@ -41,15 +41,12 @@ class DependenciesWorker {
 	 * @param {string} modifiedThree
 	 * @param {Object} shaderLibs
 	 * @param {Object} shaderChunks
-	 * @param {Object} uniformsLibs
 	 */
-	constructor( page, url, buildFile, modifiedThree, shaderLibs, shaderChunks, uniformsLibs ) {
+	constructor( page, url, buildFile, modifiedThree, shaderLibs, shaderChunks ) {
 
 		this.page = page;
 		this.url = url;
 		this.client = null;
-
-		this.crudelyEscapedUrl = `${url.replace( config.dependencies.baseUrl, '' ).replace( /\/+/g, '_' ).replace( '.html', '' )}.json`;
 
 		this.logger = signale.scope( 'Worker' );
 
@@ -57,12 +54,9 @@ class DependenciesWorker {
 		this.loggedRequests = [];
 		this.consoleLog = [];
 		this.trackedShaders = { ShaderChunk: [], ShaderLib: {}, UniformsLib: [] };
-		this.deps = { uniq: [], lines: {} };
 
-		this.astCache = {};
 		this.shaderLibs = shaderLibs;
 		this.shaderChunks = shaderChunks;
-		this.uniformsLibs = uniformsLibs;
 
 		// profiling
 		this.profilerRunning = false;
@@ -77,11 +71,7 @@ class DependenciesWorker {
 		this.stats = null;
 		this.dependencies = null;
 
-		// this is used to skip minified js libs
-		// TODO: drop and replace with config as in typeprofile worker
-		this.acceptableScriptUrlsRx = new RegExp( config.dependencies.baseUrl + '.*?(?<!min)\\.js$' );
-
-		// FIXME: move from worker to runner?
+		// FIXME: move from worker to runner? Or at least use modifiedThree?
 		this.source = fs.readFileSync( buildFile, 'utf8' );
 		this.lines = new linesAndCols.default( this.source );
 		this.sourceMapped = getSource( buildFile );
@@ -346,14 +336,14 @@ class DependenciesWorker {
 					.then( () => {
 
 						this.logger.debug( `Collecting tracked data...` );
-						this.deps.external = this.loggedRequests.filter( ( name, index ) => this.loggedRequests.indexOf( name ) === index );
-						this.deps.shaderChunks = this.trackedShaders.ShaderChunk;
-						this.deps.shaderLibs = this.trackedShaders.ShaderLib;
-						this.deps.uniforms = this.trackedShaders.UniformsLib;
-
 						this.dependencies = {
 							file: this.url,
-							deps: this.deps
+							deps: {
+								external: this.loggedRequests.filter( ( name, index ) => this.loggedRequests.indexOf( name ) === index ), // remove dupes
+								shaderChunks: this.trackedShaders.ShaderChunk,
+								shaderLibs: this.trackedShaders.ShaderLib,
+								uniforms: this.trackedShaders.UniformsLib
+							}
 						};
 
 						/* return fs.promises.writeFile(

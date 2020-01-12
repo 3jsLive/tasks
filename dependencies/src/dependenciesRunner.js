@@ -27,7 +27,7 @@ class DependenciesRunner {
 		this.threejsBase = threejsBase;
 		this.threejsBuildFile = threejsBuildFile;
 		this.urlBase = urlBase;
-		this.puppeteerOptions = [ ...config.dependencies.puppeteerOptions, ...puppeteerOptions ];
+		this.puppeteerOptions = puppeteerOptions;
 
 		this.workload = [];
 		this.currentIndex = 0;
@@ -213,8 +213,7 @@ class DependenciesRunner {
 								path.join( this.threejsBase, this.threejsBuildFile ),
 								modifiedThree,
 								this.shaderLibs,
-								this.shaderChunks,
-								this.uniformsLibs
+								this.shaderChunks
 							);
 
 							return Promise.all( [
