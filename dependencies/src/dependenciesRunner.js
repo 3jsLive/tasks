@@ -7,7 +7,7 @@ const puppeteer = require( 'puppeteer' );
 const signale = require( 'signale' );
 const stringify = require( 'json-stable-stringify' );
 
-const config = require( 'rc' )( 'dependencies' );
+const config = require( 'rc' )( 'tasks' );
 
 const DependenciesWorker = require( './dependenciesWorker' );
 

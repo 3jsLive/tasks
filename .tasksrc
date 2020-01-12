@@ -1,5 +1,7 @@
 {
 
+	// TODO: normalize it all
+
 	// root path
 	"root": "/var/3ci/",
 
@@ -33,6 +35,51 @@
 
 		// script files matching one or more of these are skipped as well, since they tax the profiler too much
 		"ignoredNamePatterns": [ "draco_wasm_wrapper", "draco_decoder", "jsm/lib", ".min.", "libs/ammo.js" ]
+
+	},
+
+	"dependencies": {
+
+		// urlBase
+		"baseUrl": "http://127.0.0.1:14227/",
+
+		// fileBase
+		"fileBase": "/tmp/tmp.9yXEdqGt77/3jsRepository/",
+
+		"resultsPath": "dependencies/results",
+
+		"shaderLibPath": "src/renderers/shaders/ShaderLib.js",
+		"shaderChunkPath": "src/renderers/shaders/ShaderChunk.js",
+		"uniformsLibPath": "src/renderers/shaders/UniformsLib.js",
+
+		"mainScriptFilename": "three.module.js",
+		"mainScriptPath": "build/three.module.js",
+
+		"examplesFilenameRegex": "(examples\/(?:webgl|webaudio|webvr|css.*?|misc)_.*?\\.html)$",
+
+		// valid prefixes for examples
+		"validExamplePrefixes": [ "webgl", "webaudio", "webvr", "css3d", "css2d", "misc" ],
+
+		// examples containing one or more of bannedExamples strings will be skipped
+		"bannedExamples": [
+			"nearestneighbour", // has a tendency to crash the runner
+			"youtube",          // youtube messes with our network-idle detection
+			"offscreencanvas"   // offscreencanvas doesn't alwways work and needs a special flag anyway, plus it's not yet modularized
+		],
+
+		"fpsLimit": 300,
+
+		"networkidle": {
+
+			"maxInflightRequests": 0,
+
+			"timeout": 4000
+		},
+
+		"profilerTimeout": 60000,
+
+		// --disable-gl-drawing-for-tests is a doubled-edged sword
+		"puppeteerOptions": [ "--use-gl=swiftshader", "--enable-gpu", "--mute-audio", "--disable-gl-drawing-for-tests" ]
 
 	}
 

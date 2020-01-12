@@ -4,7 +4,7 @@ const linesAndCols = require( 'lines-and-columns' );
 const Promise = require( 'bluebird' ); // TODO: drop bluebird?
 const signale = require( 'signale' );
 
-const config = require( 'rc' )( 'dependencies' );
+const config = require( 'rc' )( 'tasks' );
 
 /*
 
