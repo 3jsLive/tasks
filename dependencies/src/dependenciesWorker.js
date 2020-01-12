@@ -630,11 +630,9 @@ function trackStats( fpsLimit, hijackDrawFunctions = true ) {
 
 			window._sniffed_frames ++;
 
-		}
+			requestAnimationFrame( loop2 );
 
-		// TODO: put this inside the if-block above? this way we'd stop rendering and recording at the same time,
-		//	which should free more resources for processing
-		requestAnimationFrame( loop2 );
+		}
 
 	} );`;
 
