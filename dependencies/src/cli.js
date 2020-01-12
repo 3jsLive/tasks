@@ -37,6 +37,9 @@ if ( process.argv.length < 4 ) {
 // eslint-disable-next-line no-unused-vars
 let [ node, script, threejsRepository, ...urls ] = process.argv;
 
+const filterFn = url => config.dependencies.bannedExamples.every( part => url.includes( part ) === false ) &&
+	config.dependencies.validExamplePrefixes.some( prefix => url.includes( `/${prefix}_` ) === true );
+
 try {
 
 	let workloadUrls;
@@ -47,17 +50,11 @@ try {
 		workloadUrls = lf.examples( {
 			basePath: threejsRepository,
 			baseUrl: `${config.dependencies.baseUrl}/examples/`
-		} ).urls.filter( url =>
-			config.dependencies.bannedExamples.every( part => url.includes( part ) === false ) &&
-				config.dependencies.validExamplePrefixes.some( prefix => url.includes( `/${prefix}_` ) === true )
-		);
+		} ).urls.filter( filterFn );
 
 	} else {
 
-		workloadUrls = urls.filter( url =>
-			config.dependencies.bannedExamples.every( part => url.includes( part ) === false ) &&
-				config.dependencies.validExamplePrefixes.some( prefix => url.includes( `/${prefix}_` ) === true )
-		);
+		workloadUrls = urls.filter( filterFn );
 
 	}
 
