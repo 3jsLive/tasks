@@ -54,7 +54,10 @@ try {
 
 	} else {
 
-		workloadUrls = urls.slice();
+		workloadUrls = urls.filter( url =>
+			config.dependencies.bannedExamples.every( part => url.includes( part ) === false ) &&
+				config.dependencies.validExamplePrefixes.some( prefix => url.includes( `/${prefix}_` ) === true )
+		);
 
 	}
 
