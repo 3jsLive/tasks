@@ -12,7 +12,6 @@ const config = require( 'rc' )( 'dependencies' );
 const DependenciesWorker = require( './dependenciesWorker' );
 
 
-
 class DependenciesRunner {
 
 	/**
@@ -46,6 +45,7 @@ class DependenciesRunner {
 		this.maxInflightRequests = config.dependencies.networkidle.maxInflightRequests;
 
 		this.logger = signale.scope( 'Runner' );
+		this.logger.config( { displayTimestamp: true } );
 
 		this.prepareShadersAndUniforms();
 
@@ -230,6 +230,8 @@ class DependenciesRunner {
 						} )
 						.then( result => {
 
+							// TODO: save results early?
+
 							return this.worker.tearDownPage()
 								.catch( err => this.logger.error( 'page.close failed:', err ) )
 								.then( () => delete this.worker )
@@ -339,7 +341,7 @@ class DependenciesRunner {
 
 				} else {
 
-					this.logger.debug( `> Unknown prop.value.type(shaders): ${value}` );
+					this.logger.debug( `Unknown prop.value.type(shaders): ${value}` );
 
 				}
 
@@ -554,51 +556,3 @@ class DependenciesRunner {
 }
 
 module.exports = DependenciesRunner;
-
-
-
-( async() => {
-
-	const urls = [
-		// 'http://127.0.0.1:14227/examples/webgl_geometries.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometries_parametric.html',
-		'http://127.0.0.1:14227/examples/webgl_geometry_colors.html',
-		'http://127.0.0.1:14227/examples/webgl_geometry_colors_lookuptable.html',
-		'http://127.0.0.1:14227/examples/webgl_geometry_convex.html',
-		'http://127.0.0.1:14227/examples/webgl_geometry_cube.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_dynamic.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_extrude_shapes2.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_extrude_shapes.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_extrude_splines.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_hierarchy2.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_hierarchy.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_minecraft_ao.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_minecraft.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_normals.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_nurbs.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_shapes.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_spline_editor.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_teapot.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_terrain_fog.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_terrain.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_terrain_raycast.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_text.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_text_shapes.html',
-		// 'http://127.0.0.1:14227/examples/webgl_geometry_text_stroke.html'
-	];
-
-	const runner = new DependenciesRunner(
-		'/home/max/dev/3ci.dev/services/dependencies-TODO/',
-		config.dependencies.fileBase,
-		config.dependencies.mainScriptPath,
-		config.dependencies.baseUrl,
-		config.dependencies.puppeteerOptions
-	);
-
-	runner.loadUrls( urls );
-
-	console.log( `Working ${urls.length} URLs...` );
-
-	await runner.run();
-
-} )();
