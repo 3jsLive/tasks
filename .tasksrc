@@ -16,7 +16,8 @@
 			/* "--use-gl=egl", */
 			"--use-gl=swiftshader",
 			"--enable-gpu",
-			"--mute-audio"
+			"--mute-audio",
+			"--disable-gl-drawing-for-tests"
 		],
 
 		// valid prefixes for examples
