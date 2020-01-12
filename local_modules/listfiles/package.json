@@ -14,6 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "rc": "^1.2.8",
-    "signale": "file:../signale"
+    "signale": "^1.4.0"
   }
 }
