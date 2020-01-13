@@ -6,6 +6,7 @@ const signale = require( 'signale' );
 const getSource = require( 'get-source' );
 const linesAndCols = require( 'lines-and-columns' );
 const stringify = require( 'json-stable-stringify' );
+const glob = require( 'glob' );
 
 const config = require( 'rc' )( 'tasks' );
 
@@ -20,16 +21,21 @@ const config = require( 'rc' )( 'tasks' );
 
 // TODO: remove config.* as much as possible
 
+// TODO: rename Folder -> something more appropriate
+
+
 class DependenciesParser {
 
 	/**
-	 * @param {string} inputFile
-	 * @param {string} outputFile
+	 * @param {string} inputFolder
+	 * @param {string} outputFolder
+	 * @param {string} inputGlob
 	 */
-	constructor( inputFile, outputFile ) {
+	constructor( inputFolder, outputFolder, inputGlob ) {
 
-		this.inputFile = inputFile;
-		this.outputFile = outputFile;
+		this.inputFolder = inputFolder;
+		this.outputFolder = outputFolder;
+		this.inputGlob = inputGlob;
 
 		this.logger = signale.scope( 'Parser' );
 		this.logger.config( { displayTimestamp: true } );
@@ -45,55 +51,63 @@ class DependenciesParser {
 		this.astCache = {};
 
 		// result
-		this.dependencies = {
-			uniforms: [],
-			uniq: [],
-			lines: {},
-			shaderChunks: [],
-			external: []
-		};
+		this.dependencies = {};
 
 	}
 
 
 	run() {
 
-		const result = JSON.parse( fs.readFileSync( this.inputFile, 'utf8' ) );
+		for ( const inputFile of glob.sync( this.inputGlob, { cwd: this.inputFolder } ) ) {
 
-		const mainScriptRx = new RegExp( config.dependencies.mainScriptFilename + '$' );
+			this.dependencies = {
+				uniforms: [],
+				uniq: [],
+				lines: {},
+				shaderChunks: [],
+				external: []
+			};
 
-		// Go thru all coverage-processed scripts
-		for ( const script of result ) {
+			const result = JSON.parse( fs.readFileSync( path.join( this.inputFolder, inputFile ), 'utf8' ) );
 
-			this.logger.debug( 'Script:', script.url );
+			const mainScriptRx = new RegExp( config.dependencies.mainScriptFilename + '$' );
 
-			// Either the main threejs file
-			if ( mainScriptRx.test( script.url ) === true ) {
+			// Go thru all coverage-processed scripts
+			for ( const script of result ) {
 
-				this.logger.debug( `threejs script.functions.length: ${script.functions.length}` );
+				this.logger.debug( 'Script:', script.url );
 
-				for ( const func of script.functions )
-					this.processThreeJsCoverage( func );
+				// Either the main threejs file
+				if ( mainScriptRx.test( script.url ) === true ) {
 
-			} else if ( this.acceptableScriptUrlsRx.test( script.url ) === true ) {
+					this.logger.debug( `threejs script.functions.length: ${script.functions.length}` );
 
-				// or all *.js files from baseUrl, except those ending in *.min.js
-				this.logger.debug( `other script.functions.length: ${script.functions.length} in ${script.url}` );
+					for ( const func of script.functions )
+						this.processThreeJsCoverage( func );
 
-				for ( const func of script.functions )
-					this.processOtherCoverage( func, script );
+				} else if ( this.acceptableScriptUrlsRx.test( script.url ) === true ) {
+
+					// or all *.js files from baseUrl, except those ending in *.min.js
+					this.logger.debug( `other script.functions.length: ${script.functions.length} in ${script.url}` );
+
+					for ( const func of script.functions )
+						this.processOtherCoverage( func, script );
+
+				}
 
 			}
 
+			this.logger.debug( 'Cleaning...' );
+			const clean = this.cleanupDependencies();
+
+			// FIXME: hardcoded
+			const outputFile = path.join( this.outputFolder, inputFile.replace( '_profiler', '_parsed' ) );
+			this.logger.debug( `Saving '${outputFile}'...` );
+			fs.writeFileSync( outputFile, stringify( clean ), 'utf8' );
+
+			this.logger.debug( 'Done' );
+
 		}
-
-		this.logger.debug( 'Cleaning...' );
-		const clean = this.cleanupDependencies();
-
-		this.logger.debug( `Saving '${this.outputFile}'...` );
-		fs.writeFileSync( this.outputFile, stringify( clean ), 'utf8' );
-
-		this.logger.debug( 'Done' );
 
 	}
 
@@ -349,32 +363,25 @@ module.exports = DependenciesParser;
 // simple CLI-fication
 if ( require.main === module ) {
 
-	if ( process.argv.length < 3 ) {
+	if ( process.argv.length < 4 ) {
 
 		console.error( 'Invalid number of arguments' );
 
-		console.log( `Usage: ${path.basename( process.argv[ 0 ] )} ${path.relative( process.cwd(), process.argv[ 1 ] )} <Input file> [Output file]` );
+		console.log( `Usage: ${path.basename( process.argv[ 0 ] )} ${path.relative( process.cwd(), process.argv[ 1 ] )} <Input path> <Output path> [Input glob]` );
 
 		process.exit( - 1 );
 
 	}
 
 	// eslint-disable-next-line no-unused-vars
-	let [ node, script, input, output ] = process.argv;
+	let [ node, script, inputPath, outputPath, inputGlob ] = process.argv;
 
 	try {
 
-		if ( ! output ) {
-
-			if ( input.endsWith( '_profiler.json' ) )
-				output = input.replace( '_profiler.json', '_parsed.json' );
-			else
-				output = input + '_parsed';
-
-		}
+		inputGlob = ( inputGlob ) ? inputGlob : 'examples_*_profiler.json';
 
 		console.log( 'Init...' );
-		const parser = new DependenciesParser( input, output );
+		const parser = new DependenciesParser( inputPath, outputPath, inputGlob );
 
 		console.log( 'Work...' );
 		parser.run();
