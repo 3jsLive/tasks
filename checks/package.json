@@ -29,7 +29,6 @@
 		"acorn": "^7.1.0",
 		"bluebird": "^3.7.1",
 		"chalk": "^2.4.2",
-		"eslint-config-mdcs": "^4.2.3",
 		"dochandler": "file:../local_modules/dochandler",
 		"esquery": "^1.0.1",
 		"glob": "^7.1.5",
