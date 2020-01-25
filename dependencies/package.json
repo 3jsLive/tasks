@@ -16,6 +16,9 @@
 			"mocha": true
 		}
 	},
+	"scripts": {
+		"test": "mocha tests/"
+	},
 	"author": "3botjs",
 	"license": "ISC",
 	"dependencies": {
@@ -33,7 +36,10 @@
 	},
 	"devDependencies": {
 		"@types/bluebird": "^3.5.28",
+		"better-sqlite3": "^5.4.3",
 		"eslint": "^6.5.1",
-		"eslint-config-mdcs": "^4.2.3"
+		"eslint-config-mdcs": "^4.2.3",
+		"mocha": "^7.0.0",
+		"shelljs": "^0.8.3"
 	}
 }
