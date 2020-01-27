@@ -47,6 +47,9 @@ class DependenciesWorker {
 		this.logger = signale.scope( 'Worker' );
 		this.logger.config( { displayTimestamp: true } );
 
+		// trip-wire
+		this.noMainScriptFileInterceptedYet = true;
+
 		// tracked stuff
 		this.loggedRequests = [];
 		this.consoleLog = [];
@@ -165,6 +168,14 @@ class DependenciesWorker {
 				const pageStart = Date.now();
 
 				return this.promiseNetworkHasBeenIdle
+					.then( () => {
+
+						if ( this.noMainScriptFileInterceptedYet === true )
+							throw new Error( `No ${config.dependencies.mainScriptFilename} intercepted yet, aborting...` );
+						else
+							return true;
+
+					} )
 					.then( async () => {
 
 						this.logger.debug( 'Network has been idle for long enough, working...' );
@@ -300,7 +311,13 @@ class DependenciesWorker {
 						};
 
 					} )
-					.catch( err => this.logger.error( 'ERR final collection failed >', err ) );
+					.catch( err => {
+
+						this.logger.error( 'ERR final collection failed >', err );
+
+						throw new Error( 'final collection failed' );
+
+					} );
 
 			} )
 			.then( () => {
@@ -388,6 +405,8 @@ class DependenciesWorker {
 				} );
 
 				self.logger.debug( '3js INTERCEPTED' );
+
+				self.noMainScriptFileInterceptedYet = false;
 
 				// TODO: new RegExp( config.dependencies.examplesFilenameRegex ) cachen
 

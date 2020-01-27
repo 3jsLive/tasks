@@ -27,6 +27,9 @@ class TypeProfilingWorker {
 		this.threejsBuildFile = threejsBuildFile;
 		this.modifiedThree = modifiedThree;
 
+		// trip-wire
+		this.noMainScriptFileInterceptedYet = true;
+
 		this.client = null;
 		this.profilerRunning = false;
 
@@ -165,6 +168,8 @@ class TypeProfilingWorker {
 					body: this.modifiedThree
 				} );
 
+				this.noMainScriptFileInterceptedYet = false;
+
 				this.logger.debug( `${this.threejsBuildFile} intercepted` );
 
 			} else {
@@ -239,6 +244,14 @@ class TypeProfilingWorker {
 				this.logger.debug( 'Arrived' );
 
 				return promiseNetworkHasBeenIdle
+					.then( () => {
+
+						if ( this.noMainScriptFileInterceptedYet === true )
+							throw new Error( `No ${this.threejsBuildFile} intercepted yet, aborting...` );
+						else
+							return true;
+
+					} )
 					.then( () => {
 
 						this.logger.debug( 'Network has been idle for long enough, working...' );
