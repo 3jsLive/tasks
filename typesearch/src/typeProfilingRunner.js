@@ -10,6 +10,21 @@ const config = require( 'rc' )( 'tasks' );
 const TypeProfilingWorker = require( './typeProfilingWorker' );
 
 
+process.on( 'unhandledRejection', ( reason/* , p */ ) => {
+
+	console.error( 'unhandledRejection' );
+	throw reason;
+
+} );
+
+process.on( 'uncaughtException', error => {
+
+	console.error( 'uncaughtException' );
+	console.error( error );
+
+} );
+
+
 class TypeProfilingRunner {
 
 	/**
