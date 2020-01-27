@@ -84,7 +84,7 @@ class TypeProfilingWorker {
 
 			this.skipperFulFill( { url: this.url, status: 'failed' } );
 
-			// throw e;
+			throw e;
 
 		} );
 
