@@ -239,9 +239,12 @@ class TypeProfilingWorker {
 			this.page.goto( this.url, { timeout: 120000, waitUntil: 'load' } ),
 			this.skipper
 		] )
-			.then( () => {
+			.then( ret => {
 
 				this.logger.debug( 'Arrived' );
+
+				if ( ret.status === 'failed' )
+					return { errors: [ 'Page crashed' ] };
 
 				return promiseNetworkHasBeenIdle
 					.then( () => {
