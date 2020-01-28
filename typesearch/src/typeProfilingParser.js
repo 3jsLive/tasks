@@ -311,7 +311,7 @@ class TypeProfilingParser {
 
 					if ( nodeKind !== tsmorph.SyntaxKind.CloseBraceToken && nodeKind !== tsmorph.SyntaxKind.Identifier ) {
 
-						console.error( 'Node neither Identifier nor CloseBraceToken, rather:', node.getKindName() );
+						console.error( `Node at ${node.getPos()} in ${node.getSourceFile().getFilePath()} neither Identifier nor CloseBraceToken, rather ${node.getKindName()}` );
 						continue;
 
 					}
