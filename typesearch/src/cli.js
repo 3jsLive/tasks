@@ -5,10 +5,11 @@ const path = require( 'path' );
 const TypeProfilingRunner = require( './typeProfilingRunner' );
 
 
-process.on( 'unhandledRejection', reason => {
+process.on( 'unhandledRejection', ( reason, p ) => {
 
-	console.error( 'unhandledRejection' );
+	console.error( 'unhandledRejection cli' );
 	console.error( reason );
+	console.log( 'p', p );
 
 	throw reason;
 
@@ -16,7 +17,7 @@ process.on( 'unhandledRejection', reason => {
 
 process.on( 'uncaughtException', error => {
 
-	console.error( 'uncaughtException' );
+	console.error( 'uncaughtException cli' );
 	console.error( error );
 
 	throw error;

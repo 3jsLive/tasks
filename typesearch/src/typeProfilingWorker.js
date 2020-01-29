@@ -84,7 +84,7 @@ class TypeProfilingWorker {
 
 			this.skipperFulFill( { url: this.url, status: 'failed' } );
 
-			throw e;
+			// throw e;
 
 		} );
 
@@ -245,6 +245,8 @@ class TypeProfilingWorker {
 
 				if ( ret.status === 'failed' )
 					return { errors: [ 'Page crashed' ] };
+				else
+					this.logger.debug( 'ret.status', ret.status );
 
 				return promiseNetworkHasBeenIdle
 					.then( () => {
