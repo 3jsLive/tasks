@@ -273,9 +273,12 @@ class TypeProfilingWorker {
 
 						return Promise.any( [
 							this.client.send( 'Profiler.takeTypeProfile' ),
-							new Promise( x => x ).delay( 60000, false )
+							new Promise( x => x ).delay( 60000, false ),
+							this.skipper
 						] )
 							.then( result => {
+
+								this.logger.star( { result } );
 
 								if ( ! result ) {
 
