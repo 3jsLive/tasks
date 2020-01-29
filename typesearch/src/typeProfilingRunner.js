@@ -10,21 +10,6 @@ const config = require( 'rc' )( 'tasks' );
 const TypeProfilingWorker = require( './typeProfilingWorker' );
 
 
-process.on( 'unhandledRejection', ( reason/* , p */ ) => {
-
-	console.error( 'unhandledRejection' );
-	throw reason;
-
-} );
-
-process.on( 'uncaughtException', error => {
-
-	console.error( 'uncaughtException' );
-	console.error( error );
-
-} );
-
-
 class TypeProfilingRunner {
 
 	/**
@@ -51,7 +36,33 @@ class TypeProfilingRunner {
 		this.browser = null;
 		this.worker = null;
 
+		this.skipper = null;
+		this.skipperFulFill = null;
+
 		this.logger = signale.scope( 'Runner' );
+
+		process.on( 'unhandledRejection', ( reason, p ) => {
+
+			console.error( 'unhandledRejection 1' );
+
+			this.skipperFulFill( { url: this.url, status: 'failed with unhandledRejection' } );
+
+			console.error( 'unhandledRejection 2', p ? p : 'no p' );
+
+			throw reason;
+
+		} );
+
+		process.on( 'uncaughtException', error => {
+
+			console.error( 'uncaughtException 1' );
+			console.error( error );
+
+			this.skipperFulFill( { url: this.url, status: 'failed with uncaughtException' } );
+
+			console.error( 'uncaughtException 2' );
+
+		} );
 
 	}
 
@@ -132,6 +143,8 @@ class TypeProfilingRunner {
 
 					this.logger.info( `${index + 1}/${this.workload.length} ${url}` );
 
+					this.skipper = new Promise( x => this.skipperFulFill = x );
+
 					this.currentIndex = index;
 
 					return this.createPage()
@@ -140,7 +153,17 @@ class TypeProfilingRunner {
 							this.worker = new TypeProfilingWorker( page, url, this.threejsBuildFile, modifiedThree );
 
 							return this.worker.setupPage()
-								.then( () => this.worker.run() )
+								// .then( () => this.worker.run() )
+								.then( () => Promise.any( [
+									this.worker.run(),
+									this.skipper
+								] ) )
+								.then( foo => {
+
+									this.logger.star( { foo } );
+									return foo;
+
+								} )
 								.catch( err => this.logger.error( 'Worker failed to start', err ) );
 
 						} )
