@@ -288,6 +288,14 @@ class TypeProfilingWorker {
 
 								}
 
+								if ( 'status' in result && result.status === 'failed' ) {
+
+									this.logger.error( 'Page crashed?' );
+
+									throw new Error( `Page ${this.url} crashed` );
+
+								}
+
 								return this.client.send( 'Profiler.stopTypeProfile' )
 									.then( () => this.logger.debug( 'TypeProfiler stopped' ) )
 									.then( () => ( { result } ) );
