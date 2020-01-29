@@ -250,7 +250,16 @@ class TypeProfilingParser {
 
 			const profile = JSON.parse( fs.readFileSync( profileFile, 'utf8' ) );
 
+			if ( ! profile.results || ! profile.results.result ) {
+
+				console.log( 'No results, skipping' );
+
+				continue;
+
+			}
+
 			const ignores = config.typesearch.ignoredNamePatterns;
+
 			const files = profile.results.result
 				.filter( r => /^https?:\/\/(localhost|127.0.0.1):?[0-9]*/i.test( r.url ) === true )			// only local scripts
 				.filter( r => r.url.endsWith( '.html' ) === false )								// no html files
@@ -529,9 +538,13 @@ class TypeProfilingParser {
 
 				const { startRaw, sourceFile, startLineNumber } = funcObj;
 
-
 				const params = this.paramMngr.listScopedParameters( profileFile, funcNode );
-				const retvals = this.retvalMngr.listScopedParameters( profileFile, funcNode )[ 0 ].t;
+
+				let retvals = this.retvalMngr.listScopedParameters( profileFile, funcNode );
+				if ( retvals && retvals.length > 0 )
+					retvals = retvals[ 0 ].t;
+				else
+					retvals = [ 0 ]; // hax
 
 
 				if ( typeof this.contentCache[ sourceFile + '-split' ] === 'undefined' )

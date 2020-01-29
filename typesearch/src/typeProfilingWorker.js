@@ -278,8 +278,6 @@ class TypeProfilingWorker {
 						] )
 							.then( result => {
 
-								this.logger.star( { result } );
-
 								if ( ! result ) {
 
 									this.logger.error( 'Promise.delay triggered' );
@@ -314,7 +312,7 @@ class TypeProfilingWorker {
 
 						this.logger.fatal( 'Fatal error in Profiler.takeTypeProfile >', err );
 
-						return { errors: [ err ] };
+						return { errors: [ { name: err.name, message: err.message } ] };
 
 					} );
 
