@@ -244,7 +244,7 @@ class TypeProfilingParser {
 
 		for ( const profileFile of glob.sync( path.join( this.inputBasePath, filenameGlob ) ) ) {
 
-			console.log( { profileFile } );
+			this.logger.debug( { profileFile } );
 
 			this.exampleCalls[ profileFile ] = [];
 
@@ -252,7 +252,7 @@ class TypeProfilingParser {
 
 			if ( ! profile.results || ! profile.results.result ) {
 
-				console.log( 'No results, skipping' );
+				this.logger.debug( 'No results, skipping' );
 
 				continue;
 
@@ -270,7 +270,7 @@ class TypeProfilingParser {
 
 				const sourceFile = results.url.replace( /^https?:\/\/(localhost|127.0.0.1):?[0-9]*/i, this.threejsRepository );
 
-				console.log( { sourceFile } );
+				this.logger.debug( { sourceFile } );
 
 				const sourceCode = this.contentCache[ sourceFile ] || fs.readFileSync( sourceFile, 'utf8' );
 				if ( this.contentCache[ sourceFile ] )
@@ -306,7 +306,7 @@ class TypeProfilingParser {
 
 					if ( ! node ) {
 
-						console.error( 'Node not found:', sourceFile, entry.offset, entry.types.map( x => x.name ).join( ' | ' ) );
+						this.logger.error( 'Node not found:', sourceFile, entry.offset, entry.types.map( x => x.name ).join( ' | ' ) );
 						continue;
 
 					}
@@ -320,7 +320,7 @@ class TypeProfilingParser {
 
 					if ( nodeKind !== tsmorph.SyntaxKind.CloseBraceToken && nodeKind !== tsmorph.SyntaxKind.Identifier ) {
 
-						console.error( `Node at ${node.getPos()} in ${node.getSourceFile().getFilePath()} neither Identifier nor CloseBraceToken, rather ${node.getKindName()}` );
+						this.logger.error( `Node at ${node.getPos()} in ${node.getSourceFile().getFilePath()} neither Identifier nor CloseBraceToken, rather ${node.getKindName()}` );
 						continue;
 
 					}
@@ -424,7 +424,7 @@ class TypeProfilingParser {
 
 						} else {
 
-							console.error( 'functionsCache has a hit but no name?' );
+							this.logger.error( 'functionsCache has a hit but no name?' );
 
 							process.exit( - 3 );
 
@@ -781,7 +781,7 @@ class TypeProfilingParser {
 
 			} else {
 
-				console.log( 'Nothing:', func.p.getKindName() );
+				this.logger.warning( 'Nothing:', func.p.getKindName() );
 
 			}
 
@@ -803,7 +803,7 @@ class TypeProfilingParser {
 
 		} else {
 
-			console.log( '? >', func.p.getKindName() );
+			this.logger.warning( '? >', func.p.getKindName() );
 
 		}
 
