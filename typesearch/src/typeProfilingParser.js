@@ -340,7 +340,7 @@ class TypeProfilingParser {
 
 						// check to see if we've already encountered this FunctionNode
 						const existingParams = this.paramMngr.listScopedParameters( profileFile, parentparent );
-						const sigParams = parentparent.getSignature().getParameters();
+						const sigParams = ( parentparent.getSignature ) ? parentparent.getSignature().getParameters() : parentparent.getParent().getSignature().getParameters();
 
 						if ( ! existingParams || sigParams.length !== existingParams.length ) {
 
