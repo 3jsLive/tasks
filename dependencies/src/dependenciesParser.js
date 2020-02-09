@@ -38,7 +38,7 @@ class DependenciesParser {
 		this.inputGlob = inputGlob;
 
 		this.logger = signale.scope( 'Parser' );
-		this.logger.config( { displayTimestamp: true } );
+		this.logger.config( { displayTimestamp: true, displayDate: true } );
 
 		// this is used to skip minified js libs
 		// TODO: drop and replace with config as in typeprofile worker
@@ -293,41 +293,6 @@ function isUniqueLine( lineEntry, idx, array ) {
 	);
 
 }
-
-
-function isUniqueUniform( uni, idx, uniforms ) {
-
-	return idx === uniforms.findIndex( u =>
-		u.name === uni.name &&
-		u.start.line === uni.start.line &&
-		u.start.column === uni.start.column &&
-		u.end.line === uni.end.line &&
-		u.end.column === uni.end.column
-	);
-
-}
-
-
-function isUniqueShaderChunk( chunk, idx, chunks ) {
-
-	return idx === chunks.findIndex( u =>
-		u.name === chunk.name &&
-		u.source === chunk.source &&
-		u.start.line === chunk.start.line &&
-		u.start.column === chunk.start.column &&
-		u.end.line === chunk.end.line &&
-		u.end.column === chunk.end.column
-	);
-
-}
-
-
-function sortBySource( a, b ) {
-
-	return a.source.localeCompare( b.source );
-
-}
-
 
 function sortByName( a, b ) {
 

@@ -222,7 +222,7 @@ class DependenciesWorker {
 						const sniffed_frames = await this.page.evaluate( () => window._sniffed_frames );
 						const sniff_started = await this.page.evaluate( () => window._sniff_started );
 
-						console.log(
+						this.logger.log(
 							'Stats "%s" > Sniffed frames: %i%s   Sniff started: %f   Sniffed duration: %f',
 							this.url, sniffed_frames,
 							( sniffed_frames > config.dependencies.fpsLimit ) ? `(=${sniffed_frames - config.dependencies.fpsLimit})` : '',
