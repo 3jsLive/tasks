@@ -310,6 +310,15 @@ class DependenciesWorker {
 							}
 						};
 
+						this.dependencies.deps[ 'local' ] = this.dependencies.deps.external.reduce( ( all, cur ) => {
+
+							if ( cur.startsWith( config.dependencies.baseUrl ) === true )
+								all.push( cur.replace( new RegExp( '^' + config.dependencies.baseUrl, 'i' ), '' ) );
+
+							return all;
+
+						}, [] );
+
 					} )
 					.catch( err => {
 

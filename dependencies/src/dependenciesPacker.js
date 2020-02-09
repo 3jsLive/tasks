@@ -79,6 +79,11 @@ class DependenciesPacker {
 		this.logger.debug( deps.external );
 		deps.external.sort();
 
+		this.logger.debug( `Sorting other stuff...` );
+		this.logger.debug( `deps.local: ${deps.local.length}` );
+		this.logger.debug( deps.local );
+		deps.local.sort();
+
 		this.logger.debug( `deps.shaderChunks: ${deps.shaderChunks.length}` );
 		deps.shaderChunks.sort( sortBySource );
 

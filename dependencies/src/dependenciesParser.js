@@ -61,11 +61,8 @@ class DependenciesParser {
 		for ( const inputFile of glob.sync( this.inputGlob, { cwd: this.inputFolder } ) ) {
 
 			this.dependencies = {
-				uniforms: [],
 				uniq: [],
 				lines: {},
-				shaderChunks: [],
-				external: []
 			};
 
 			const result = JSON.parse( fs.readFileSync( path.join( this.inputFolder, inputFile ), 'utf8' ) );
@@ -157,7 +154,6 @@ class DependenciesParser {
 				// this.logger.debug( 'Looking for:', mapResult.sourceLine );
 				// this.logger.debug( 'Looking at index:', mapResult.sourceFile.text.indexOf( mapResult.sourceLine ) + mapResult.column );
 				// this.logger.debug( 'Originally:', range.startOffset );
-
 				const vrAST = this.astCache[ mapResult.sourceFile.path ];
 
 				// findNodeAt rarely causes issues, but findNodeAfter just works - maybe some extensive testing could settle it
@@ -267,16 +263,6 @@ class DependenciesParser {
 		for ( const path in deps.lines )
 			deps.lines[ path ] = deps.lines[ path ].filter( isUniqueLine );
 
-		// filter duplicate uniforms
-		this.logger.debug( `Filtering duplicate uniforms...` );
-		deps.uniforms = deps.uniforms.filter( isUniqueUniform );
-		this.logger.debug( `Uniforms: ${deps.uniforms.map( u => u.name ).join( ', ' )}` );
-
-		// filter duplicate shader chunks
-		this.logger.debug( `Filtering duplicate shader chunks...` );
-		deps.shaderChunks = deps.shaderChunks.filter( isUniqueShaderChunk );
-		this.logger.debug( `Shader chunks: ${deps.shaderChunks.map( sc => sc.name ).join( ', ' )}` );
-
 		// everything as deterministic as possible ( also see use of custom stringify )
 		this.logger.debug( `Sorting code lines...` );
 		for ( const key in deps.lines )
@@ -286,13 +272,6 @@ class DependenciesParser {
 		this.logger.debug( `deps.uniq: ${deps.uniq.length}` );
 		this.logger.debug( deps.uniq );
 		deps.uniq.sort();
-
-		this.logger.debug( `deps.external: ${deps.external.length}` );
-		this.logger.debug( deps.external );
-		deps.external.sort();
-
-		this.logger.debug( `deps.shaderChunks: ${deps.shaderChunks.length}` );
-		deps.shaderChunks.sort( sortBySource );
 
 		return deps;
 
