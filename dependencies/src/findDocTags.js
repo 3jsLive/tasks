@@ -1,6 +1,6 @@
 const parser = require( 'dochandler' );
 
-const logger = require( 'signale' )( 'findDocTags' );
+const logger = require( 'signale' ).scope( 'findDocTags' );
 const util = require( 'util' );
 
 /*
