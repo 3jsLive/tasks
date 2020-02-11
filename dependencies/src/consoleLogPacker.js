@@ -55,7 +55,7 @@ class ConsoleLogPacker {
 		}
 
 		this.logger.debug( `Saving '${outputFile}'...` );
-		fs.writeFileSync( outputFile, stringify( this.consoleLogs ), 'utf8' );
+		fs.writeFileSync( path.join( this.outputPath, outputFile ), stringify( this.consoleLogs ), 'utf8' );
 
 		this.logger.debug( 'Done' );
 
