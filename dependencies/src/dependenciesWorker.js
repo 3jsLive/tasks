@@ -122,11 +122,21 @@ class DependenciesWorker {
 		//
 		// Listeners
 		//
+		const scrub = text => text.replace( new RegExp( config.dependencies.baseUrl, 'g' ), 'HOST/' );
+
 		this.page.on( 'console', msg => {
 
 			this.logger.debug( `Console ${msg.text()}` );
 
-			this.consoleLog.push( { type: 'console', msg: { type: msg.type(), text: msg.text(), location: msg.location(), args: msg.args().join( ' ' ) } } );
+			this.consoleLog.push( {
+				type: 'console',
+				msg: {
+					type: msg.type(),
+					text: scrub( msg.text() ),
+					location: scrub( msg.location() ),
+					args: scrub( msg.args().join( ' ' ) )
+				}
+			} );
 
 		} );
 
@@ -134,7 +144,13 @@ class DependenciesWorker {
 
 			this.logger.debug( `PageError ${msg}` );
 
-			this.consoleLog.push( { type: 'pageerror', msg: { name: msg.name, text: msg.message } } );
+			this.consoleLog.push( {
+				type: 'pageerror',
+				msg: {
+					name: scrub( msg.name ),
+					text: scrub( msg.message )
+				}
+			} );
 
 		} );
 
