@@ -28,7 +28,7 @@ class DependenciesPacker {
 		this.outputPath = outputPath;
 		this.inputGlob = inputGlob;
 
-		this.logger = signale.scope( 'Packer' );
+		this.logger = signale.scope( 'DependenciesPacker' );
 		this.logger.config( { displayTimestamp: true, displayDate: true } );
 
 		// result
