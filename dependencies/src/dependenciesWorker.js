@@ -122,7 +122,7 @@ class DependenciesWorker {
 		//
 		// Listeners
 		//
-		const scrub = text => text.replace( new RegExp( config.dependencies.baseUrl, 'g' ), 'HOST/' );
+		const scrub = text => text.replace ? text.replace( new RegExp( config.dependencies.baseUrl, 'g' ), 'HOST/' ) : text;
 
 		this.page.on( 'console', msg => {
 
@@ -133,7 +133,7 @@ class DependenciesWorker {
 				msg: {
 					type: msg.type(),
 					text: scrub( msg.text() ),
-					location: scrub( msg.location() ),
+					location: scrub( `${msg.location().url}:${msg.location().lineNumber}:${msg.location().columnNumber}` ),
 					args: scrub( msg.args().join( ' ' ) )
 				}
 			} );
