@@ -133,7 +133,7 @@ class DependenciesWorker {
 				msg: {
 					type: msg.type(),
 					text: scrub( msg.text() ),
-					location: scrub( `${msg.location().url}:${msg.location().lineNumber}:${msg.location().columnNumber}` ),
+					location: scrub( `${msg.location().url}:${msg.location().lineNumber || 0}:${msg.location().columnNumber || 0}` ),
 					args: scrub( msg.args().join( ' ' ) )
 				}
 			} );
