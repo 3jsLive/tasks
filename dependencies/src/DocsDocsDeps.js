@@ -40,7 +40,7 @@ const pageTagProc = require( './processors/PageTag' );
  * @param {string} basePath
  * @param {string} input
  */
-function run( basePath, input, outputStream ) {
+function run( basePath, input ) {
 
 	if ( typeof basePath === 'undefined' )
 		throw new Error( 'Missing base path to three.js directory' );
@@ -162,7 +162,7 @@ function run( basePath, input, outputStream ) {
 
 	}
 
-	outputStream.write( stringify( { errors: allErrors, results: allResults } ) );
+	// outputStream.write( stringify( { errors: allErrors, results: allResults } ) );
 
 	return { errors: allErrors, results: allResults };
 
