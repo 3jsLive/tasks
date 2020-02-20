@@ -329,11 +329,11 @@ class DependenciesWorker {
 						this.dependencies.deps[ 'local' ] = this.dependencies.deps.external.reduce( ( all, cur ) => {
 
 							if ( cur.startsWith( config.dependencies.baseUrl ) === true )
-								all.push( cur.replace( new RegExp( '^' + config.dependencies.baseUrl, 'i' ), '' ) );
+								all.push( cur.replace( new RegExp( `^${config.dependencies.baseUrl}(.+?)(\\?.+)?$`, 'i' ), '$1' ) );
 
 							return all;
 
-						}, [] );
+						}, [] ).filter( ( file, index, arr ) => arr.indexOf( file ) === index );
 
 					} )
 					.catch( err => {
