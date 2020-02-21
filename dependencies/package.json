@@ -40,6 +40,7 @@
 		"eslint": "^6.5.1",
 		"eslint-config-mdcs": "^4.2.3",
 		"mocha": "^7.0.0",
+		"nyc": "^15.0.0",
 		"shelljs": "^0.8.3"
 	}
 }
