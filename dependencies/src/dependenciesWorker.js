@@ -1,6 +1,6 @@
 const fs = require( 'fs' );
 const linesAndCols = require( 'lines-and-columns' );
-const Promise = require( 'bluebird' ); // TODO: drop bluebird?
+const Promise = require( 'bluebird' );
 const signale = require( 'signale' );
 
 const config = require( 'rc' )( 'tasks' );
@@ -99,14 +99,14 @@ class DependenciesWorker {
 		//
 		// exposed functions
 		//
-		await this.page.exposeFunction( 'trackShaderChunk', shader => {
+		await this.page.exposeFunction( 'trackShaderChunk', /* istanbul ignore next */shader => {
 
 			// console.log( `Pushing chunk ${shader}` );
 			this.trackedShaders.ShaderChunk.push( this.shaderChunks[ shader ] );
 
 		} );
 
-		await this.page.exposeFunction( 'trackShaderLib', ( propertyName, shaderName ) => {
+		await this.page.exposeFunction( 'trackShaderLib', /* istanbul ignore next */( propertyName, shaderName ) => {
 
 			// console.log( `Pushing lib ${shaderName}.${propertyName}` );
 			this.trackedShaders.ShaderLib[ shaderName ] = this.shaderLibs[ shaderName ];
@@ -205,14 +205,14 @@ class DependenciesWorker {
 						try {
 
 							// abort once we've either sniffed enough frames or reached our time limit
-							await this.page.waitFor( ( fpsLimit, dynamicWaitLimit ) =>
+							await this.page.waitFor( /* istanbul ignore next */ ( fpsLimit, dynamicWaitLimit ) =>
 								window._sniffed_frames >= fpsLimit ||
 									window._sniff_started + dynamicWaitLimit <= performance.now(),
 							{ timeout: 120000 }, config.dependencies.fpsLimit, 15 * 1000 /* dynamicWaitLimit */
 							);
 
 							// emergency shut-off valve, otherwise we're collecting stats till page.close() worst-case
-							await this.page.evaluate( () => {
+							await this.page.evaluate( /* istanbul ignore next */ () => {
 
 								window._emergency_shutoff = true;
 
@@ -222,28 +222,13 @@ class DependenciesWorker {
 
 							this.logger.error( `Stats timed out` );
 
-							const sniffed_duration = await this.page.evaluate( () => performance.now() - window._sniff_started );
-							const sniffed_frames = await this.page.evaluate( () => window._sniffed_frames );
-							const sniff_started = await this.page.evaluate( () => window._sniff_started );
-
-							this.logger.error(
-								`Stats > Duration ${sniffed_duration}, Frames ${sniffed_frames}, Start ${sniff_started}`
-							);
+							await this._logStats();
 
 							process.exit( - 1 ); // FIXME:
 
 						}
 
-						const sniffed_duration = await this.page.evaluate( () => performance.now() - window._sniff_started );
-						const sniffed_frames = await this.page.evaluate( () => window._sniffed_frames );
-						const sniff_started = await this.page.evaluate( () => window._sniff_started );
-
-						this.logger.log(
-							'Stats "%s" > Sniffed frames: %i%s   Sniff started: %f   Sniffed duration: %f',
-							this.url, sniffed_frames,
-							( sniffed_frames > config.dependencies.fpsLimit ) ? `(=${sniffed_frames - config.dependencies.fpsLimit})` : '',
-							( sniff_started / 1000 ).toFixed( 4 ), ( sniffed_duration / 1000 ).toFixed( 4 )
-						);
+						await this._logStats();
 
 						return true;
 
@@ -252,11 +237,11 @@ class DependenciesWorker {
 
 						this.profilerRunning = false;
 
-						const sniffed_duration = await this.page.evaluate( () => performance.now() - window._sniff_started );
-						const sniffed_frames = await this.page.evaluate( () => window._sniffed_frames );
-						const sniff_started = await this.page.evaluate( () => window._sniff_started );
-						const stats = await this.page.evaluate( () => window._sniff );
+						const [ sniffed_duration, sniffed_frames, sniff_started, stats ] = await this._getStats();
 
+						/*
+							turn `metricArray = [ { name: foo, value: bar }, ... ]` into `metricsHashed = { foo: bar, ... }`
+						*/
 						const metricsHashed = this.metrics.map( metricArray => {
 
 							const hashed = {};
@@ -326,14 +311,10 @@ class DependenciesWorker {
 							}
 						};
 
-						this.dependencies.deps[ 'local' ] = this.dependencies.deps.external.reduce( ( all, cur ) => {
-
-							if ( cur.startsWith( config.dependencies.baseUrl ) === true )
-								all.push( cur.replace( new RegExp( `^${config.dependencies.baseUrl}(.+?)(\\?.+)?$`, 'i' ), '$1' ) );
-
-							return all;
-
-						}, [] ).filter( ( file, index, arr ) => arr.indexOf( file ) === index );
+						// simply ignore everything after the ?
+						this.dependencies.deps[ 'local' ] = this.dependencies.deps.external
+							.reduce( this._stripQueryString(), [] )
+							.filter( ( file, index, arr ) => arr.indexOf( file ) === index );
 
 					} )
 					.catch( err => {
@@ -511,8 +492,9 @@ class DependenciesWorker {
 
 				// client.removeAllListeners( 'Debugger.paused' );
 
-				// again, all based on hope here
-				const threeScriptId = event.callFrames[ 0 ].location.scriptId;
+				// probably only one callFrame to begin with, but better save than sorry
+				const callFrame = event.callFrames.find( cf => cf.url === `${config.dependencies.baseUrl}${config.dependencies.mainScriptPath}` );
+				const threeScriptId = callFrame.location.scriptId;
 
 				const threeLocation = this.lines.locationForIndex( this.source.indexOf( 'function WebGLRenderer( parameters ) {' ) );
 
@@ -527,7 +509,12 @@ class DependenciesWorker {
 
 				this.logger.debug( 'Profiler is already running, time to handle WebGLRenderer' );
 
-				const threeCallFrameId = event.callFrames[ 0 ].callFrameId; // Hope.
+				// usually there are multiple frames:
+				// first WebGLRenderer@three.js
+				// then maybe an `init` or similar in the example script
+				// and finally the global part of the example's script
+				const callFrame = event.callFrames.find( cf => cf.functionName === 'WebGLRenderer' || cf.url === `${config.dependencies.baseUrl}${config.dependencies.mainScriptPath}` );
+				const threeCallFrameId = callFrame.callFrameId;
 
 				await this.client.send( 'Debugger.evaluateOnCallFrame', { callFrameId: threeCallFrameId, expression: 'window.RENDERERInstance = this;' } );
 
@@ -556,6 +543,48 @@ class DependenciesWorker {
 		);
 
 		this.logger.debug( 'CDP/Debugger done' );
+
+	}
+
+	/**
+	 * @returns {[number, number, number, any]}
+	 */
+	async _getStats() {
+
+		return await Promise.all( [
+			this.page.evaluate( /* istanbul ignore next */ () => performance.now() - window._sniff_started ),
+			this.page.evaluate( /* istanbul ignore next */ () => window._sniffed_frames ),
+			this.page.evaluate( /* istanbul ignore next */ () => window._sniff_started ),
+			this.page.evaluate( /* istanbul ignore next */ () => window._sniff )
+		] );
+
+	}
+
+	async _logStats() {
+
+		const [ sniffed_duration, sniffed_frames, sniff_started ] = await this._getStats();
+
+		this.logger.log(
+			'Stats "%s" > Sniffed frames: %i%s   Sniff started: %f   Sniffed duration: %f',
+			this.url, sniffed_frames,
+			( sniffed_frames > config.dependencies.fpsLimit ) ? `(=${sniffed_frames - config.dependencies.fpsLimit})` : '',
+			( sniff_started / 1000 ).toFixed( 4 ), ( sniffed_duration / 1000 ).toFixed( 4 )
+		);
+
+	}
+
+	_stripQueryString() {
+
+		const stripQueryStringRx = new RegExp( `^${config.dependencies.baseUrl}(.+?)(\\?.+)?$`, 'i' );
+
+		return ( all, cur ) => {
+
+			if ( cur.startsWith( config.dependencies.baseUrl ) === true )
+				all.push( cur.replace( stripQueryStringRx, '$1' ) );
+
+			return all;
+
+		};
 
 	}
 
