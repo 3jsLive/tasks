@@ -34,8 +34,12 @@ class CompareExamplesExports extends BaseCheck {
 
 		this.logger.debug( `${uniqueTsNames.length} unique TS names, ${uniqueJsNames.length} unique JS names` );
 
-		const uniqueTsEntries = { errors: [], results: uniqueTsNames.map( name => ( { name, file: class2fileTs[ name ] } ) ) };
-		const uniqueJsEntries = { errors: [], results: uniqueJsNames.map( name => ( { name, file: class2fileJs[ name ] } ) ) };
+		const uniqueTsEntries = { errors: [], hits: 0, results: uniqueTsNames.map( name => ( { name, file: class2fileTs[ name ] } ) ) };
+		const uniqueJsEntries = { errors: [], hits: 0, results: uniqueJsNames.map( name => ( { name, file: class2fileJs[ name ] } ) ) };
+
+		// counter
+		uniqueTsEntries.hits = uniqueTsEntries.results.length;
+		uniqueJsEntries.hits = uniqueJsEntries.results.length;
 
 		return { errors: [], results: { TypeScript: uniqueTsEntries, JavaScript: uniqueJsEntries } };
 

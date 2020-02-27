@@ -3,6 +3,7 @@
 	"results": {
 		"JavaScript": {
 			"errors": [],
+			"hits": 1,
 			"results": [
 				{
 					"file": "src/Foo",
@@ -12,6 +13,7 @@
 		},
 		"TypeScript": {
 			"errors": [],
+			"hits": 1,
 			"results": [
 				{
 					"file": "src/Bar",

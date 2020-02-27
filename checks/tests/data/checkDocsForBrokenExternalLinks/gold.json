@@ -3,6 +3,7 @@
 	"results": {
 		"docs/api/en/foo/test.html": {
 			"errors": [],
+			"hits": 3,
 			"results": [
 				"https://httpstat.us/400",
 				"https://httpstat.us/401",

@@ -3,6 +3,7 @@
 	"results": {
 		"docs/api/foo/test.html": {
 			"errors": [],
+			"hits": 1,
 			"results": [
 				{
 					"example": "webgl_non_existing_example",

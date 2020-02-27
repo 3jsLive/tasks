@@ -107,7 +107,7 @@ class CompareDeclarationsWithDocs extends BaseCheck {
 
 				this.logger.error( slug.absolute + ':', err );
 
-				results[ slug.relative ] = { errors: [ ( err.message ) ? err.message.replace( this.basePath, '' ) : err ], results: [] };
+				results[ slug.relative ] = { errors: [ ( err.message ) ? err.message.replace( this.basePath, '' ) : err ], hits: 0, results: [] };
 
 				continue;
 
@@ -123,7 +123,7 @@ class CompareDeclarationsWithDocs extends BaseCheck {
 
 				this.logger.debug( `Skipping ${slug.relative} because of topology: ${slug.topology}` );
 
-				results[ slug.relative ] = { errors: [ 'File skipped because of marked topology' ], results: [] };
+				results[ slug.relative ] = { errors: [ 'File skipped because of marked topology' ], hits: 0, results: [] };
 
 				continue;
 
@@ -277,17 +277,23 @@ class CompareDeclarationsWithDocs extends BaseCheck {
 
 				// result[ 'error' ] = err.message.replace( basePath, '' );
 
-				results[ slug.relative ] = { errors: [ ( err.message ) ? err.message.replace( this.basePath, '' ) : err ], results: [] };
+				results[ slug.relative ] = { errors: [ ( err.message ) ? err.message.replace( this.basePath, '' ) : err ], hits: 0, results: [] };
 
 				continue;
 
 			}
 
 
+			// count it
+			const hits = result.onlyDecl.properties.length + result.onlyDecl.methods.length +
+						 result.onlyDocs.properties.length + result.onlyDocs.methods.length +
+						 result.diff.properties.length + result.diff.methods.length;
+
+
 			//
 			// done
 			//
-			results[ slug.relative ] = { errors: [], results: [ result ] };
+			results[ slug.relative ] = { errors: [], hits: hits, results: [ result ] };
 
 		}
 

@@ -3,6 +3,7 @@
 	"results": {
 		"src/cameras/Camera.d.ts": {
 			"errors": [],
+			"hits": 8,
 			"results": [
 				{
 					"name": "Camera",

@@ -116,7 +116,7 @@ class CheckDocsForBrokenExampleLinks extends BaseCheck {
 
 						// only save if there are some relevant exampletags or any errors
 						if ( relevant.length > 0 || results[ index ].errors.length > 0 )
-							all[ file.relative ] = { errors: results[ index ].errors, results: relevant };
+							all[ file.relative ] = { errors: results[ index ].errors, hits: relevant.length, results: relevant };
 
 					}
 

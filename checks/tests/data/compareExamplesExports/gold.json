@@ -3,6 +3,7 @@
 	"results": {
 		"JavaScript": {
 			"errors": [],
+			"hits": 1,
 			"results": [
 				{
 					"file": "examples/jsm/shaders/VolumeShader",
@@ -12,6 +13,7 @@
 		},
 		"TypeScript": {
 			"errors": [],
+			"hits": 1,
 			"results": [
 				{
 					"file": "examples/jsm/shaders/VolumeShader",

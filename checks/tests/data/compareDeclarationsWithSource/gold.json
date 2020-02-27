@@ -3,6 +3,7 @@
 	"results": {
 		"src/renderers/shaders/ShaderChunk.js": {
 			"errors": [],
+			"hits": 13,
 			"results": [
 				{
 					"onlyDecl": {
@@ -33,6 +34,7 @@
 		},
 		"src/renderers/shaders/ShaderLib.js": {
 			"errors": [],
+			"hits": 0,
 			"results": [
 				{
 					"onlyDecl": {
@@ -48,6 +50,7 @@
 		},
 		"src/renderers/shaders/UniformsLib.js": {
 			"errors": [],
+			"hits": 13,
 			"results": [
 				{
 					"onlyDecl": {

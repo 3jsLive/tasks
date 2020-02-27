@@ -189,10 +189,13 @@ class CheckNonDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_NonDo
 
 					// create it if it doesn't exist yet
 					if ( typeof all[ val.file ] === 'undefined' )
-						all[ val.file ] = { errors: [], results: [] };
+						all[ val.file ] = { errors: [], results: [], hits: 0 };
 
 					// add the failed URL
 					all[ val.file ].results.push( val.url );
+
+					// increment counter
+					all[ val.file ].hits ++;
 
 					return all;
 
@@ -200,7 +203,7 @@ class CheckNonDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_NonDo
 
 				// add files left-out because of an earlier error
 				for ( const filename in errors )
-					results[ filename ] = { errors: [ errors[ filename ] ], results: [] };
+					results[ filename ] = { errors: [ errors[ filename ] ], hits: 0, results: [] };
 
 				this.logger.debug( "results", results );
 

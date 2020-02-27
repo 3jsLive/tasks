@@ -78,7 +78,7 @@ class CompareDeclarationsWithSource extends BaseCheck {
 			onlyDecl: { methods: [], properties: [] }
 		};
 
-		const result = { errors: [], results: [] };
+		const result = { errors: [], results: [], hits: 0 };
 
 		try {
 
@@ -138,6 +138,7 @@ class CompareDeclarationsWithSource extends BaseCheck {
 
 		// Done
 		result.results.push( retval );
+		result.hits = retval.onlyDecl.properties.length + retval.onlySource.properties.length;
 
 		return result;
 
@@ -157,7 +158,7 @@ class CompareDeclarationsWithSource extends BaseCheck {
 			onlyDecl: { methods: [], properties: [] }
 		};
 
-		const result = { errors: [], results: [] };
+		const result = { errors: [], results: [], hits: 0 };
 
 		// very elegant indeed
 		try {
@@ -218,6 +219,7 @@ class CompareDeclarationsWithSource extends BaseCheck {
 
 		// Done
 		result.results.push( retval );
+		result.hits = retval.onlySource.properties.length + retval.onlyDecl.properties.length;
 
 		return result;
 
@@ -237,7 +239,7 @@ class CompareDeclarationsWithSource extends BaseCheck {
 			onlyDecl: { methods: [], properties: [] }
 		};
 
-		const result = { errors: [], results: [] };
+		const result = { errors: [], results: [], hits: 0 };
 
 		// very elegant indeed
 		try {
@@ -289,6 +291,7 @@ class CompareDeclarationsWithSource extends BaseCheck {
 
 		// Done
 		result.results.push( retval );
+		result.hits = retval.onlyDecl.properties.length + retval.onlySource.properties.length;
 
 		return result;
 

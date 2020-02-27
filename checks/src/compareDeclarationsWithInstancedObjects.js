@@ -73,7 +73,7 @@ class CompareDeclarationsWithInstancedObjects extends BaseCheck {
 
 			try {
 
-				const work = classes.reduce( ( all, cur ) => this.reduceClassCollection( all, cur, project, ast ), { errors: [], results: [] } );
+				const work = classes.reduce( ( all, cur ) => this.reduceClassCollection( all, cur, project, ast ), { errors: [], hits: 0, results: [] } );
 
 				if ( ( work.errors && work.errors.length > 0 ) || ( work.results && work.results.length > 0 ) )
 					all[ relativeFilePath ] = work;
@@ -82,7 +82,7 @@ class CompareDeclarationsWithInstancedObjects extends BaseCheck {
 
 				this.logger.error( relativeFilePath, 'failure:', err );
 
-				all[ relativeFilePath ] = { errors: [ err ], results: [] };
+				all[ relativeFilePath ] = { errors: [ err ], hits: 0, results: [] };
 
 			}
 
@@ -161,17 +161,22 @@ class CompareDeclarationsWithInstancedObjects extends BaseCheck {
 
 			}
 
+			const legacySource = this._checkForLegacy( inJsAndNotTs, referencesInLegacy );
+			const legacyDecl = this._checkForLegacy( inTsAndNotJs, referencesInLegacy );
+
 			allClasses.results.push( {
 				name,
 				onlySource: {
 					methods: [],
-					properties: this._checkForLegacy( inJsAndNotTs, referencesInLegacy )
+					properties: legacySource
 				},
 				onlyDecl: {
 					methods: [],
-					properties: this._checkForLegacy( inTsAndNotJs, referencesInLegacy )
+					properties: legacyDecl
 				}
 			} );
+
+			allClasses.hits += legacySource.length + legacyDecl.length;
 
 		} catch ( err ) {
 
