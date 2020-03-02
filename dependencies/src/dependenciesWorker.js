@@ -608,7 +608,8 @@ function trackStats( fpsLimit, hijackDrawFunctions = true ) {
 		},
 		webgl: {
 			drawElements: [], drawArrays: [], bindTexture: [], useProgram: [],
-			glFaces: [], glVertices: [], glPoints: []
+			glFaces: [], glVertices: [], glPoints: [],
+			shaders: { code: [], type: [] }
 		}
 	};`;
 
@@ -619,7 +620,7 @@ function trackStats( fpsLimit, hijackDrawFunctions = true ) {
 			return function () {
 
 				callback.apply( this, arguments );
-				func.apply( this, arguments );
+				return func.apply( this, arguments );
 
 			};
 
@@ -678,6 +679,18 @@ function trackStats( fpsLimit, hijackDrawFunctions = true ) {
 				window._sniff.webgl.bindTexture.push( ts );
 
 			}
+
+		} );
+
+		WebGLRenderingContext.prototype.shaderSource = hijack( WebGLRenderingContext.prototype.shaderSource, function ( ) {
+
+			window._sniff.webgl.shaders.code.push( arguments[ 1 ] );
+
+		} );
+
+		WebGLRenderingContext.prototype.createShader = hijack( WebGLRenderingContext.prototype.createShader, function ( ) {
+
+			window._sniff.webgl.shaders.type.push( arguments[ 0 ] );
 
 		} );`;
 
