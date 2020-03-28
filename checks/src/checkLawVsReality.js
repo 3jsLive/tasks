@@ -470,6 +470,9 @@ class CallSignature extends ErrorAndWarnings {
 
 		this.index = index;
 
+		/**
+		 * @type {Parameter[]}
+		 */
 		this.parameters = [];
 
 	}
@@ -497,9 +500,15 @@ class Func extends ErrorAndWarnings {
 
 		super();
 
+		/**
+		 * @type {string}
+		 */
 		this.name = name;
 		this.origin = origin;
 
+		/**
+		 * @type {CallSignature[]}
+		 */
 		this.callSignatures = [];
 		this.returns = [];
 
@@ -541,6 +550,9 @@ class CodeFile extends ErrorAndWarnings {
 
 		this.original = original;
 
+		/**
+		 * @type {Func[]}
+		 */
 		this.functions = [];
 
 	}
@@ -603,6 +615,9 @@ class CheckLawVsReality extends BaseCheck {
 
 		this.logger.debug( `Analyzing ${this.files.length} files...` );
 
+		/**
+		 * @type {Object.<string, CodeFile>}
+		 */
 		const results = {};
 
 		for ( const prof of this.files ) {
