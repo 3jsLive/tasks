@@ -781,7 +781,10 @@ class CheckLawVsReality extends BaseCheck {
 
 			}
 
-			let allParams, retvals;
+			const allParams = [];
+			const retvals = [];
+
+			// check if we might be dealing with a constructor
 			if (
 				Array.isArray( target ) === false &&
 				tsmorph.TypeGuards.isClassDeclaration( target ) &&
@@ -794,7 +797,10 @@ class CheckLawVsReality extends BaseCheck {
 
 				this.logger.debug( 'Constructor entry? %j %j', prof.func, prof.original );
 
-				if ( target.getConstructors().length === 0 ) {
+				const constructors = target.getConstructors();
+
+				// did we find any constructors?
+				if ( constructors.length === 0 ) {
 
 					func.addError( 'Possible constructor result, but no constructors found, skipping...' );
 
@@ -804,24 +810,20 @@ class CheckLawVsReality extends BaseCheck {
 
 				} else {
 
-					allParams = target.getConstructors().map( ( /** @type {tsmorph.ConstructorDeclaration} */ cst ) => cst.getParameters() );
+					// for all detected constructors
+					for ( const cst of constructors ) {
 
-					// retvals = target.getConstructors().map( cst => cst.getReturnType().getApparentType().getText() );
-					retvals = [];//allFuncs.map( func => func.getReturnType().getApparentType().getText() );
-					for ( const cst of target.getConstructors() ) {
+						// get all possible parameters of all constructor signatures
+						allParams.push( cst.getParameters() );
 
+						// get all return types
 						const returnType = cst.getReturnType().getApparentType();
 
+						// some light processing to check for arrays, etc.
 						const types = CheckLawVsReality._processReturnType( returnType );
 
+						// add to the pile
 						retvals.push( ...types );
-
-						// types.forEach( t => {
-
-						// 	const type = new Type( t.text, t.array );
-						// 	func.addReturnType( type );
-
-						// } );
 
 					}
 
@@ -829,16 +831,19 @@ class CheckLawVsReality extends BaseCheck {
 
 			} else {
 
+				// not a constructor, so collect all functions we can find
 				let funcs = [];
 
 				if ( Array.isArray( target ) ) {
 
 					if ( target.every( t => tsmorph.TypeGuards.isFunctionDeclaration( t ) ) ) {
 
+						// simple function declaration
 						funcs = target;
 
 					} else if ( target.every( t => tsmorph.TypeGuards.isVariableDeclaration( t ) ) ) {
 
+						// var foo = { bar: function() { } }
 						funcs = target.reduce( ( all, v ) => {
 
 							all.push( ...v.getDescendantsOfKind( tsmorph.SyntaxKind.MethodSignature ) );
@@ -851,6 +856,7 @@ class CheckLawVsReality extends BaseCheck {
 
 				} else if ( tsmorph.TypeGuards.isClassDeclaration( target ) ) {
 
+					// class foo { bar() { } }
 					funcs = target.getMethods();
 
 				} else if ( tsmorph.TypeGuards.isNamespaceDeclaration( target ) ) {
@@ -859,8 +865,10 @@ class CheckLawVsReality extends BaseCheck {
 
 				}
 
-				const allFuncs = funcs.filter( f => f.getName() === prof.func.name ); //find( f => f.getName() === prof.func.name );
+				// select all function declarations that match our current one
+				const allFuncs = funcs.filter( f => f.getName() === prof.func.name );
 
+				// none found? -> add warning and skip this one
 				if ( allFuncs.length === 0 ) {
 
 					func.addError( `Couldn't find a suitable method or function, skipping...` );
@@ -869,30 +877,33 @@ class CheckLawVsReality extends BaseCheck {
 
 					continue;
 
-				}
+				} else {
 
-				allParams = allFuncs.map( func => func.getParameters() );
+					// for all detected functions
+					for ( const f of allFuncs ) {
 
-				retvals = [];
-				for ( const f of allFuncs ) {
+						// collect all possible parameters of all matching functions
+						allParams.push( f.getParameters() );
 
-					const returnType = f.getReturnType().getApparentType();
+						// get the return types
+						const returnType = f.getReturnType().getApparentType();
 
-					const types = CheckLawVsReality._processReturnType( returnType );
+						// some light processing to check for arrays, etc.
+						const types = CheckLawVsReality._processReturnType( returnType );
 
-					retvals.push( ...types );
+						// add
+						retvals.push( ...types );
 
-					// types.forEach( t => {
-
-					// 	const type = new Type( t.text, t.array );
-					// 	func.addReturnType( type );
-
-					// } );
+					}
 
 				}
 
 			}
 
+
+			//
+			// extract the actually valid parameters
+			//
 			const lawParams = allParams.map( ps => CheckLawVsReality._extractLawParameters( ps ) );
 
 
@@ -960,9 +971,6 @@ class CheckLawVsReality extends BaseCheck {
 					fullMatchName = ( degree === 'green' );
 
 
-					// debugging output
-					const nameColor = fullMatchName ? chalk.greenBright.bold : chalk[ degree ]; // hack
-
 					//
 					// type check
 					//
@@ -974,6 +982,10 @@ class CheckLawVsReality extends BaseCheck {
 					//
 					// debug
 					//
+
+					// color output
+					const nameColor = fullMatchName ? chalk.greenBright.bold : chalk[ degree ]; // hack
+
 					// and merge them together in their respective colors
 					const lawTypeString = [
 						...correctLawTypes.map( type => chalk.greenBright.bold( type.name ) ),
@@ -995,11 +1007,10 @@ class CheckLawVsReality extends BaseCheck {
 
 			} );
 
-
 			//
 			// return values comparison
 			//
-			const RetParam = new Parameter( 'return', 'return', 0, false, false ); // placeholder values
+			const RetParam = new Parameter( '-return-', '-return-', 0, false, false ); // placeholder values
 
 			retvals.forEach( r => RetParam.addLawType( new Type( r.text, r.array ) ) );
 			prof.retval.forEach( r => RetParam.addRealityType( new Type( r ) ) );
@@ -1075,7 +1086,6 @@ class CheckLawVsReality extends BaseCheck {
 		// HACK: i swear it started out little
 		const replacements = [
 			[ 'CurveExtras', 'Curves' ],
-			[ 'TessellateModifier', 'SubdivisionModifier' ],
 			[ 'Water2', 'Water' ],
 			[ '3MFLoader', 'ThreeMFLoader' ]
 		];
@@ -1146,7 +1156,10 @@ class CheckLawVsReality extends BaseCheck {
 
 			const pT = p.getType();
 
-			const types = ( pT.isUnion() ) ? pT.getUnionTypes().map( t => new Type( t.getText(), t.isArray() ) ) : [ new Type( pT.getText(), pT.isArray() ) ];
+			const types = ( pT.isUnion() ) ?
+				pT.getUnionTypes().map( t => new Type( t.getText( null, tsmorph.TypeFormatFlags.None ), t.isArray() ) )
+				:
+				[ new Type( pT.getText( null, tsmorph.TypeFormatFlags.None ), pT.isArray() ) ];
 
 			all.push( {
 				name: p.getName(),
@@ -1174,7 +1187,7 @@ class CheckLawVsReality extends BaseCheck {
 		if ( returnType.isUnion() ) {
 
 			types = returnType.getUnionTypes().map( t => ( {
-				text: t.getText(),
+				text: t.getText( null, tsmorph.TypeFormatFlags.None ),
 				array: t.isArray(),
 				tsType: null
 			} ) );
@@ -1182,7 +1195,7 @@ class CheckLawVsReality extends BaseCheck {
 		} else {
 
 			types = [ {
-				text: returnType.getText(),
+				text: returnType.getText( null, tsmorph.TypeFormatFlags.None ),
 				array: returnType.isArray(),
 				tsType: null
 			} ];
@@ -1224,9 +1237,9 @@ if ( require.main === module ) {
 
 
 		// done
-		// const util = require( 'util' );
-		// console.log( "RESULT:", util.inspect( result, false, 9, true ) );
-		console.log( "RESULT: %J", result );
+		const util = require( 'util' );
+		console.log( "RESULT:", util.inspect( result, false, 9, true ) );
+		// console.log( "RESULT:", result );
 
 	} )();
 
