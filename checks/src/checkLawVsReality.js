@@ -66,7 +66,7 @@ class ErrorAndWarnings {
 		/**
 		 * @type {string[]}
 		 */
-		this.warnings = [];
+		// this.warnings = [];
 
 	}
 
@@ -83,12 +83,12 @@ class ErrorAndWarnings {
 	/**
 	 * @param {string} msg
 	 */
-	addWarning( msg ) {
+	// addWarning( msg ) {
 
-		if ( ! this.warnings.includes( msg ) )
-			this.warnings.push( msg );
+	// 	if ( ! this.warnings.includes( msg ) )
+	// 		this.warnings.push( msg );
 
-	}
+	// }
 
 }
 
@@ -646,7 +646,7 @@ class CheckLawVsReality extends BaseCheck {
 
 			if ( func.name === '-anonymous-' ) {
 
-				func.addWarning( 'Anonymous function, skipping for now...' );
+				func.addError( 'Anonymous function, skipping for now...' );
 
 				continue;
 
@@ -734,7 +734,7 @@ class CheckLawVsReality extends BaseCheck {
 
 				if ( allFuncs.length === 0 ) {
 
-					func.addWarning( `Couldn't find a suitable method or function, skipping...` );
+					func.addError( `Couldn't find a suitable method or function, skipping...` );
 
 					this.logger.warn( `Couldn't find method/function for "${prof.func.name}", next...` );
 
