@@ -150,6 +150,26 @@ class Parameter {
 	}
 
 
+	toJSON() {
+
+		return {
+			index: this.index,
+			lawTypes: {
+				correct: this.correctLawTypes().map( type => type.name ),
+				missing: this.missingLawTypes().map( type => type.name )
+			},
+			realityTypes: {
+				correct: this.typeMatches().filter( result => result.success ).map( result => result.reality.name ),
+				wrong: this.typeMatches().filter( result => ! result.success ).map( result => result.reality.name )
+			},
+			degree: this.matchDegree(),
+			lawName: this.lawName + ( this.optional ? '?' : '' ),
+			realityName: this.realName
+		};
+
+	}
+
+
 	/**
 	 * Compare "law" types with actually encountered "reality" types
 	 * @param {import('ts-morph').Project} project
@@ -477,6 +497,18 @@ class CallSignature extends ErrorAndWarnings {
 
 	}
 
+
+	toJSON() {
+
+		return {
+			errors: this.errors,
+			index: this.index,
+			results: this.parameters
+		};
+
+	}
+
+
 	/**
 	 * @param {Parameter} param
 	 */
@@ -511,6 +543,20 @@ class Func extends ErrorAndWarnings {
 		 */
 		this.callSignatures = [];
 		this.returns = [];
+
+	}
+
+
+	toJSON() {
+
+		return {
+			errors: this.errors,
+			examples: this.origin.examples,
+			original: this.origin.original,
+			name: this.name,
+			returns: this.returns,
+			callSignatures: this.callSignatures
+		};
 
 	}
 
@@ -554,6 +600,74 @@ class CodeFile extends ErrorAndWarnings {
 		 * @type {Func[]}
 		 */
 		this.functions = [];
+
+	}
+
+
+	toJSON() {
+
+		const functions = this.functions.reduce( ( all, fn ) => {
+
+			const callSignatures = fn.callSignatures.filter( cs => {
+
+				if ( cs.errors.length > 0 ) {
+
+					return true;
+
+				} else if ( cs.parameters.some( p => {
+
+					const data = p.toJSON();
+
+					return data.lawTypes.missing.length > 0 || data.realityTypes.wrong.length > 0;
+
+				} ) ) {
+
+					return true;
+
+				}
+
+				return false;
+
+			} );
+
+			const returns = fn.returns.filter( ret => {
+
+				const data = ret.toJSON();
+
+				if ( data.lawTypes.missing.length > 0 || data.realityTypes.wrong.length > 0 )
+					return true;
+				else
+					return false;
+
+			} );
+
+			const totalHits = callSignatures.length + returns.length;
+
+			if ( totalHits > 0 ) {
+
+				all.hits += totalHits;
+				all.functions.push( fn );
+
+			}
+
+			return all;
+
+		}, { functions: [], hits: 0 } );
+
+		return {
+			errors: this.errors,
+			results: functions.functions,
+			hits: functions.hits
+		};
+
+	}
+
+	toFullJSON() {
+
+		return {
+			errors: this.errors,
+			results: this.functions
+		};
 
 	}
 
