@@ -1087,12 +1087,10 @@ class CheckLawVsReality extends BaseCheck {
 		const replacements = [
 			[ 'CurveExtras', 'Curves' ],
 			[ 'Water2', 'Water' ],
+			[ 'TessellateModifier', 'SubdivisionModifier' ],
 			[ '3MFLoader', 'ThreeMFLoader' ]
 		];
-		const hit = replacements.findIndex( e => e[ 0 ] === basename );
-		if ( hit > - 1 )
-			basename = replacements[ hit ][ 1 ];
-		// END HACK
+		// END HACK, part 1
 
 
 		let target = source.getClasses().find( klass => klass.getName() === basename );
@@ -1129,11 +1127,22 @@ class CheckLawVsReality extends BaseCheck {
 
 				}
 
-				console.log( 'i surrender' );
-				console.log( entries );
-				process.exit();
 
-				return target;
+				// HACK: part 2, try it with an alternative basename
+				const hit = replacements.findIndex( e => e[ 0 ] === basename );
+				if ( hit > - 1 ) {
+
+					basename = replacements[ hit ][ 1 ];
+
+					return CheckLawVsReality._getClassOrNamespaceOrFunctionsOrVariables( source, basename );
+
+				} else {
+
+					console.log( 'i surrender' );
+					console.log( entries );
+					process.exit();
+
+				}
 
 			}
 
