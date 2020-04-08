@@ -174,6 +174,9 @@ if ( require.main === module ) {
 		// done
 		console.log( "RESULT:", result );
 
+		// hard exit
+		process.kill( process.pid );
+
 	} )();
 
 }
