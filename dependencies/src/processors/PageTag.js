@@ -124,7 +124,21 @@ module.exports = function processPageTags( list, { docFilename, docFilenameRelat
 
 			const query = { regexDefault: false, type: 'property', search: { name: new RegExp( '^' + p.anchor + '$' ) } };
 
-			const loc = searchAndCache( filepath, query );
+			let loc;
+
+			try {
+
+				loc = searchAndCache( filepath, query );
+
+			} catch ( err ) {
+
+				logger.error( `Error in file '${filepathRelative}':`, err );
+
+				errors.push( { tag: p, err: { message: err.message, location: err.location } } );
+
+				continue;
+
+			}
 
 			if ( ! Array.isArray( loc ) ) {
 
