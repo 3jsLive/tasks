@@ -3,13 +3,19 @@
 	"hits": 7,
 	"results": {
 		"docs/api/foo/test.html": {
-			"errors": [],
+			"errors": [
+			  {
+			    "location": null,
+			    "message": "ExampleTag without a link: replaced / tag / example",
+			    "name": "Invalid tag"
+			  }
+			],
 			"hits": 1,
 			"results": [
-				"webgl_non_existing_example"
+			  "webgl_non_existing_example"
 			]
 		},
-		"docs/api/foo/test2.html": {
+	  "docs/api/foo/test2.html": {
 			"errors": [],
 			"hits": 2,
 			"results": [

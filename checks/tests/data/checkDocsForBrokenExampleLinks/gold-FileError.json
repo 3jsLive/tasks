@@ -1,13 +1,17 @@
 {
 	"errors": [],
-	"hits": 7,
+	"hits": 6,
 	"results": {
 		"docs/api/foo/test.html": {
-			"errors": [],
-			"hits": 1,
-			"results": [
-				"webgl_non_existing_example"
-			]
+			"errors": [
+				{
+					"location": null,
+					"message": "File could not be read",
+					"name": "FileReadError"
+				}
+			],
+			"hits": 0,
+			"results": []
 		},
 		"docs/api/foo/test2.html": {
 			"errors": [],

@@ -1,6 +1,6 @@
 {
 	"errors": [],
-	"hits": 7,
+	"hits": 5,
 	"results": {
 		"docs/api/foo/test.html": {
 			"errors": [],
@@ -20,27 +20,13 @@
 		"docs/api/foo/testBroken.html": {
 			"errors": [
 				{
-					"location": {
-						"end": {
-							"column": 16,
-							"line": 10,
-							"offset": 211
-						},
-						"start": {
-							"column": 15,
-							"line": 10,
-							"offset": 210
-						}
-					},
-					"message": "Expected [a-zA-Z0-9_] but \" \" found.",
-					"name": "SyntaxError"
+					"location": null,
+					"message": "Invalid location: undefined",
+					"name": "Error"
 				}
 			],
-			"hits": 2,
-			"results": [
-				"webgl_first_fake",
-				"webgl_still_fake"
-			]
+			"hits": 0,
+			"results": []
 		},
 		"docs/api/foo/testBroken2.html": {
 			"errors": [

@@ -3,6 +3,12 @@
 	Check for broken links to examples
 		i.e. [example:...]
 
+	Type: Static
+	Needs build: No
+	Needs docs: Yes
+	Needs examples: No
+	Needs source: No
+
 */
 
 const Promise = require( 'bluebird' );
@@ -31,6 +37,142 @@ class CheckDocsForBrokenExampleLinks extends BaseCheck {
 	}
 
 
+	static _blankLines( lines, start, end ) {
+
+		if ( Number.isSafeInteger( start ) === false || Number.isSafeInteger( end ) === false )
+			throw new Error( `Start and end have to be valid numbers: ${start} ${end}` );
+
+		if ( start <= 0 )
+			throw new Error( `Can't blank lines < 0: ${start}` );
+
+		const tmp = lines.slice();
+
+		if ( start - 1 > lines.length || end - 1 > lines.length )
+			throw new Error( `Start or end outside range: ${start} ${end} ${tmp.length}` );
+
+		for ( let i = start; i <= end; i ++ ) {
+
+			tmp[ i - 1 ] = '_'.repeat( tmp[ i - 1 ].length );
+
+		}
+
+		return tmp;
+
+	}
+
+	_readChunk( content ) {
+
+		const parsed = [];
+		const errors = [];
+
+		try {
+
+			parsed.push( ...dochandler.parseDoc.parseString( content ) );
+
+		} catch ( err ) {
+
+			errors.push( { message: err.message.replace( this.basePath, '' ), location: err.location ? err.location : null, name: err.name } );
+
+			this.logger.error( `_readChunk Error:`, err );
+
+			if ( ! err.location || err.location === null )
+				throw new Error( `Invalid location: ${err.location}` ); // can't do anything, give up
+
+			this.logger.debug( `Blanking ${err.location.start.line} - ${err.location.end.line}` );
+
+			const lines = CheckDocsForBrokenExampleLinks._blankLines( content.split( /\n/g ), err.location.start.line, err.location.end.line );
+
+			// TODO: check for recursion error
+			const tmp = this._readChunk( lines.join( '\n' ) );
+
+			parsed.push( ...tmp.parsed );
+			errors.push( ...tmp.errors );
+
+		}
+
+		return { parsed, errors };
+
+	}
+
+	async _readFile( file ) {
+
+		let content;
+
+		try {
+
+			content = await fs.promises.readFile( file.absolute, 'utf8' );
+
+		} catch ( err ) {
+
+			this.logger.error( `IO Error with ${file.absolute}: ${err}` );
+
+			return {
+				parsed: [],
+				errors: [
+					{ message: err.message.replace( this.basePath, '' ), location: null, name: err.name }
+				]
+			};
+
+		}
+
+		try {
+
+			return this._readChunk( content );
+
+		} catch ( err ) {
+
+			this.logger.error( `Parsing Error with ${file.absolute}: ${err}` );
+
+			return {
+				parsed: [],
+				errors: [
+					{ message: err.message.replace( this.basePath, '' ), location: err.location ? err.location : null, name: err.name }
+				]
+			};
+
+		}
+
+	}
+
+	_checkTagExistance( tag ) {
+
+		const errors = [];
+		const results = [];
+
+		if ( ! tag.link ) {
+
+			this.logger.error( 'ExampleTag without a link?', tag );
+
+			errors.push( { message: `ExampleTag without a link: ${tag.title}`, location: tag.location, name: 'Invalid tag' } );
+
+			return { errors, results };
+
+		} else {
+
+			const checkFilepath = path.join( this.basePath, 'examples', tag.link + '.html' );
+
+			const existance = fs.existsSync( checkFilepath );
+
+			if ( existance === true ) {
+
+				this.logger.debug( tag.link, 'found' );
+
+				// results.push( { file: file.relative, example: tag.link, exists: true } );
+
+			} else {
+
+				this.logger.warn( tag.link, 'NOT found' );
+
+				results.push( tag.link );
+
+			}
+
+		}
+
+		return { errors, results };
+
+	}
+
 	async worker() {
 
 		// glob all relevant doc files
@@ -42,20 +184,13 @@ class CheckDocsForBrokenExampleLinks extends BaseCheck {
 
 			const retval = { errors: [], results: [] };
 
-			this.logger.debug( `File: ${file}, Relative: ${file.relative}` );
+			this.logger.debug( `File: ${file.absolute}, Relative: ${file.relative}` );
 
-			let parsed;
-			try {
+			const { parsed, errors } = await this._readFile( file );
 
-				const content = await fs.promises.readFile( file.absolute, 'utf8' );
-				parsed = dochandler.parseDoc.parseString( content );
+			if ( errors.length > 0 ) {
 
-			} catch ( err ) {
-
-				this.logger.error( 'Parsing Error with', file.absolute, ':', err );
-
-				retval.errors.push( { message: err.message.replace( this.basePath, '' ), location: err.location, name: err.name } );
-				return retval;
+				retval.errors.push( ...errors );
 
 			}
 
@@ -66,57 +201,34 @@ class CheckDocsForBrokenExampleLinks extends BaseCheck {
 			if ( exampleTags.length === 0 )
 				return retval;
 
-			const _checkTagExistance = ( tag ) => {
+			exampleTags.forEach( tag => {
 
-				if ( ! tag.link ) {
+				const { errors, results } = this._checkTagExistance( tag );
 
-					this.logger.error( 'ExampleTag without a link?', file.absolute, tag );
+				retval.errors.push( ...errors );
 
-					retval.errors.push( `ExampleTag without a link: ${tag}` );
+				retval.results.push( ...results );
 
-					return;
-
-				}
-
-				const checkFilepath = path.join( this.basePath, 'examples', tag.link + '.html' );
-
-				const existance = fs.existsSync( checkFilepath );
-
-				if ( existance === true ) {
-
-					this.logger.debug( tag.link, 'found' );
-
-					retval.results.push( { file: file.relative, example: tag.link, exists: true } );
-
-				} else {
-
-					this.logger.warn( tag.link, 'NOT found' );
-
-					retval.results.push( { file: file.relative, example: tag.link, exists: false } );
-
-				}
-
-			};
-
-			exampleTags.forEach( _checkTagExistance );
+			} );
 
 			return retval;
 
 		} )
 			.then( results => {
 
+				let totalHits = 0;
+
 				// zip with files array and drop empty or positive results (positive = tags with non-missing examples)
 				const final = this.files.reduce( ( all, file, index ) => {
 
-					// errors or any results are interesting, for starters
-					if ( results[ index ].errors.length > 0 || results[ index ].results.length > 0 ) {
+					const errors = results[ index ].errors;
+					const relevant = results[ index ].results;
 
-						// filter down to relevant results (i.e. those with missing examples)
-						const relevant = results[ index ].results.filter( res => res.exists === false );
+					// only save if there are some relevant exampletags or any errors
+					if ( relevant.length > 0 || errors.length > 0 ) {
 
-						// only save if there are some relevant exampletags or any errors
-						if ( relevant.length > 0 || results[ index ].errors.length > 0 )
-							all[ file.relative ] = { errors: results[ index ].errors, hits: relevant.length, results: relevant };
+						all[ file.relative ] = { errors: errors, hits: relevant.length, results: relevant };
+						totalHits += relevant.length;
 
 					}
 
@@ -128,7 +240,7 @@ class CheckDocsForBrokenExampleLinks extends BaseCheck {
 
 				this.logger.info( `Found ${Object.keys( final ).length} files with interesting ExampleTags` );
 
-				return { errors: [], results: final };
+				return { errors: [], hits: totalHits, results: final };
 
 			} )
 			.catch( err => {
