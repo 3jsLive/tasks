@@ -48,6 +48,8 @@
 		"@types/esquery": "^1.0.0",
 		"eslint": "^6.5.1",
 		"eslint-config-mdcs": "^4.2.3",
-		"mocha": "^6.2.2"
+		"mocha": "^6.2.2",
+		"nyc": "^15.0.1",
+		"sinon": "^9.0.2"
 	}
 }
