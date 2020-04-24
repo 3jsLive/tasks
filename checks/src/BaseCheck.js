@@ -46,7 +46,7 @@ class BaseCheck {
 
 			this.logger.fatal( 'worker failed:', err );
 
-			this.results = { results: [], errors: [ { message: err.message.replace( this.basePath, '' ), location: err.location, name: err.name } ] };
+			this.results = { results: {}, hits: 0, errors: [ { message: err.message.replace( this.basePath, '' ), location: ( err.location ? err.location : null ), name: err.name } ] };
 
 		}
 
