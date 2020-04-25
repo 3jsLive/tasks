@@ -1,0 +1,11 @@
+{
+	"errors": [
+		{
+			"location": null,
+			"message": "Could not find source file in project at the provided path: src/Three.d.ts",
+			"name": "Error"
+		}
+	],
+	"hits": 0,
+	"results": {}
+}
