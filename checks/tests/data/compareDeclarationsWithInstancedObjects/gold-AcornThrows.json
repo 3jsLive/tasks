@@ -1,0 +1,11 @@
+{
+	"results": {},
+	"hits": 0,
+	"errors": [
+		{
+		  "message": "Failed to load Three.Legacy: ENOENT: no such file or directory, open 'foo'",
+		  "location": null,
+		  "name": "Error"
+		}
+	]
+}

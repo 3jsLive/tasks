@@ -16,6 +16,12 @@ const BaseCheck = require( './BaseCheck' );
 		3) does it have any that are missing in $foo.d.ts and vice versa?
 		4) safety-check: is it referenced in Three.Legacy.js?
 
+	Type: Dynamic
+	Needs build: Yes
+	Needs docs: No
+	Needs examples: No
+	Needs source: Yes
+
 	TODO: Declaration files can have @deprecated modifiers, how to incorporate them?
 		// const util = require( 'util' );
 		// console.log( util.inspect( project
@@ -34,29 +40,60 @@ class CompareDeclarationsWithInstancedObjects extends BaseCheck {
 
 	async worker() {
 
-		this.three = require( this.basePath );
+		try {
+
+			this.three = require( this.basePath );
+
+		} catch ( err ) {
+
+			this.logger.fatal( `Failed to load THREE: ${err.message}` );
+
+			throw new Error( `Failed to load THREE from ${this.basePath}` );
+
+		}
 
 		//
 		// Create the typescript project and add declaration files
 		//
-		const project = new tsmorph.Project();
-		project.addExistingSourceFiles( path.join( this.basePath, 'src/**/*.d.ts' ) );
+		try {
+
+			this.project = new tsmorph.Project();
+			this.project.addExistingSourceFiles( path.join( this.basePath, 'src/**/*.d.ts' ) );
+
+		} catch ( err ) {
+
+			this.logger.fatal( `Failed to add source files to project: ${err.message}` );
+
+			throw new Error( `Failed to add source files: ${err.message.replace( this.basePath, '' )}` );
+
+		}
 
 
 		//
 		// Create our AST for Three.Legacy.js sanity checks
 		// We could use the typescript parser, but esquery is very nifty
 		//
-		const ast = acorn.parse(
-			fs.readFileSync( path.join( this.basePath, 'src/Three.Legacy.js' ), 'utf8' ),
-			{ sourceType: "module", ecmaVersion: 9 }
-		);
+		try {
+
+			this.ast = acorn.parse(
+				fs.readFileSync( path.join( this.basePath, 'src/Three.Legacy.js' ), 'utf8' ),
+				{ sourceType: "module", ecmaVersion: 9 }
+			);
+
+		} catch ( err ) {
+
+			this.logger.fatal( `Failed to load AST for Three.Legacy: ${err.message}` );
+
+			throw new Error( `Failed to load Three.Legacy: ${err.message.replace( this.basePath, '' )}` );
+
+		}
 
 
 		//
 		// Get all classes from all source files and start looping over them
 		//
-		const results = project.getSourceFiles().reduce( ( all, file ) => {
+		let totalHits = 0;
+		const results = this.project.getSourceFiles().reduce( ( all, file ) => {
 
 			this.logger.debug( 'File', file.getFilePath() );
 
@@ -73,16 +110,18 @@ class CompareDeclarationsWithInstancedObjects extends BaseCheck {
 
 			try {
 
-				const work = classes.reduce( ( all, cur ) => this.reduceClassCollection( all, cur, project, ast ), { errors: [], hits: 0, results: [] } );
+				const work = classes.reduce( ( all, cur ) => this.reduceClassCollection( all, cur ), { errors: [], hits: 0, results: [] } );
 
 				if ( ( work.errors && work.errors.length > 0 ) || ( work.results && work.results.length > 0 ) )
 					all[ relativeFilePath ] = work;
+
+				totalHits += work.hits;
 
 			} catch ( err ) {
 
 				this.logger.error( relativeFilePath, 'failure:', err );
 
-				all[ relativeFilePath ] = { errors: [ err ], hits: 0, results: [] };
+				all[ relativeFilePath ] = { errors: [ { message: err.message.replace( this.basePath, '' ) } ], hits: 0, results: [] };
 
 			}
 
@@ -90,23 +129,18 @@ class CompareDeclarationsWithInstancedObjects extends BaseCheck {
 
 		}, {} );
 
-		return { errors: [], results: results };
+		return { errors: [], hits: totalHits, results: results };
 
 	}
 
 	/**
 	 * @param {object} allClasses
 	 * @param {tsmorph.Node} singleClass
-	 * @param {tsmorph.Project} project
-	 * @param {Array} ast
 	 */
-	reduceClassCollection( allClasses, singleClass, project, ast ) {
+	reduceClassCollection( allClasses, singleClass ) {
 
 		const declType = singleClass.getType();	// TS type for this class
 		const name = singleClass.getName();		// convenience
-
-
-		// logger.debug( 'JSDocs:', singleClass.getJsDocs().map( doc => doc.getStructure().description ) );
 
 
 		// skip if not "officially" exported
@@ -127,7 +161,7 @@ class CompareDeclarationsWithInstancedObjects extends BaseCheck {
 
 
 			// collect all properties TypeScript knows about
-			const declProps = project.getTypeChecker().getPropertiesOfType( declType ).map( prop => prop.getName() );
+			const declProps = this.project.getTypeChecker().getPropertiesOfType( declType ).map( prop => prop.getName() );
 
 			// collect all properties JavaScript has "access" to, all up the prototype chain
 			const jsProps = this._getOwnAndPrototypeEnumerablesAndNonenumerables( klass )
@@ -150,7 +184,7 @@ class CompareDeclarationsWithInstancedObjects extends BaseCheck {
 
 			while ( referencesInLegacy.length === 0 ) {
 
-				referencesInLegacy = esquery( ast, `MemberExpression[object.name="${referencedClass.getName()}"] + ObjectExpression > Property > !Identifier` );
+				referencesInLegacy = esquery( this.ast, `MemberExpression[object.name="${referencedClass.getName()}"] + ObjectExpression > Property > !Identifier` );
 
 				// logger.debug( referencedClass.getName(), 'mentions in legacy:', referencesInLegacy.length );
 
@@ -182,7 +216,7 @@ class CompareDeclarationsWithInstancedObjects extends BaseCheck {
 
 			this.logger.error( name, 'failed:', err.message );
 
-			allClasses.errors.push( ( err.message ) ? { [ name ]: err.message.replace( this.basePath, '' ) } : { [ name ]: err } );
+			allClasses.errors.push( { message: err.message.replace( this.basePath, '' ) } );
 
 		}
 

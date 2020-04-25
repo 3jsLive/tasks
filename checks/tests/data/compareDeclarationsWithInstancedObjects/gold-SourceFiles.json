@@ -1,0 +1,11 @@
+{
+	"results": {},
+	"hits": 0,
+	"errors": [
+		{
+		  "message": "Failed to add source files: Foo",
+		  "location": null,
+		  "name": "Error"
+		}
+	]
+}

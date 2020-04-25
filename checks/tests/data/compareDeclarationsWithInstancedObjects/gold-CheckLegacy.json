@@ -1,32 +1,15 @@
 {
 	"errors": [],
-	"hits": 4,
+	"hits": 2,
 	"results": {
 		"src/cameras/Camera.d.ts": {
-			"errors": [],
-			"hits": 2,
-			"results": [
+			"errors": [
 				{
-					"name": "Camera",
-					"onlySource": {
-						"methods": [],
-						"properties": []
-					},
-					"onlyDecl": {
-						"methods": [],
-						"properties": [
-							{
-								"name": "customDepthMaterial",
-								"legacy": false
-							},
-							{
-								"name": "customDistanceMaterial",
-								"legacy": false
-							}
-						]
-					}
+					"message": "Foo"
 				}
-			]
+			],
+			"hits": 0,
+			"results": []
 		},
 		"src/math/Vector2.d.ts": {
 			"errors": [],
