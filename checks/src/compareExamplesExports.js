@@ -1,3 +1,13 @@
+/*
+
+	Type: Static
+	Needs build: No
+	Needs docs: No
+	Needs examples: Yes
+	Needs source: No
+
+*/
+
 const collectedExports = require( './collectExports' );
 const fs = require( 'fs' );
 const path = require( 'path' );
@@ -41,7 +51,10 @@ class CompareExamplesExports extends BaseCheck {
 		uniqueTsEntries.hits = uniqueTsEntries.results.length;
 		uniqueJsEntries.hits = uniqueJsEntries.results.length;
 
-		return { errors: [], results: { TypeScript: uniqueTsEntries, JavaScript: uniqueJsEntries } };
+		// total hits
+		const totalHits = uniqueJsEntries.hits + uniqueTsEntries.hits;
+
+		return { errors: [], hits: totalHits, results: { TypeScript: uniqueTsEntries, JavaScript: uniqueJsEntries } };
 
 	}
 

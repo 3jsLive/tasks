@@ -1,0 +1,11 @@
+{
+	"errors": [
+		{
+			"location": null,
+			"message": "No .d.ts files found",
+			"name": "Error"
+		}
+	],
+	"hits": 0,
+	"results": {}
+}
