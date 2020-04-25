@@ -1,0 +1,11 @@
+{
+	"results": {},
+	"hits": 0,
+	"errors": [
+		{
+		  "message": "Foo",
+		  "location": null,
+		  "name": "FakeException"
+		}
+	]
+}

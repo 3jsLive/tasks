@@ -1,0 +1,39 @@
+{
+	"errors": [],
+	"hits": 0,
+	"results": {
+		"src/renderers/shaders/ShaderChunk.js": {
+			"errors": [
+				{
+					"code": "ENOENT",
+					"location": null,
+					"message": "ENOENT: no such file or directory, open 'src/renderers/shaders/ShaderChunk.js'"
+				}
+			],
+			"hits": 0,
+			"results": []
+		},
+		"src/renderers/shaders/ShaderLib.js": {
+			"errors": [
+				{
+					"code": "ENOENT",
+					"location": null,
+					"message": "ENOENT: no such file or directory, open 'src/renderers/shaders/ShaderLib.js'"
+				}
+			],
+			"hits": 0,
+			"results": []
+		},
+		"src/renderers/shaders/UniformsLib.js": {
+			"errors": [
+				{
+					"code": "ENOENT",
+					"location": null,
+					"message": "ENOENT: no such file or directory, open 'src/renderers/shaders/UniformsLib.js'"
+				}
+			],
+			"hits": 0,
+			"results": []
+		}
+	}
+}

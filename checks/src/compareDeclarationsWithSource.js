@@ -5,6 +5,12 @@
 
 	For now we're only checking ShaderLib/-Chunks and UniformLib.
 
+	Type: Static
+	Needs build: No
+	Needs docs: No
+	Needs examples: No
+	Needs source: Yes
+
 	TODO: Investigate whether we should check more source files,
 			possibly all of them, or if the TypeScript compiler is
 			better suited for this
@@ -55,6 +61,7 @@ class CompareDeclarationsWithSource extends BaseCheck {
 
 		return {
 			errors: [],
+			hits: shaderChunk.hits + shaderLib.hits + uniformsLib.hits,
 			results: {
 				[ PATH_SHADER_CHUNK ]: shaderChunk,
 				[ PATH_SHADER_LIB ]: shaderLib,
@@ -130,9 +137,9 @@ class CompareDeclarationsWithSource extends BaseCheck {
 
 			this.logger.error( err );
 
-			result.errors.push( ( err.message ) ? err.message.replace( this.basePath, '' ) : err );
+			result.errors.push( { message: err.message.replace( this.basePath, '' ), code: err.code, location: err.location ? err.location : null } );
 
-			return;
+			return result;
 
 		}
 
@@ -211,9 +218,9 @@ class CompareDeclarationsWithSource extends BaseCheck {
 
 			this.logger.error( err );
 
-			result.errors.push( ( err.message ) ? err.message.replace( this.basePath, '' ) : err );
+			result.errors.push( { message: err.message.replace( this.basePath, '' ), code: err.code, location: err.location ? err.location : null } );
 
-			return;
+			return result;
 
 		}
 
@@ -283,9 +290,9 @@ class CompareDeclarationsWithSource extends BaseCheck {
 
 			this.logger.error( err );
 
-			result.errors.push( ( err.message ) ? err.message.replace( this.basePath, '' ) : err );
+			result.errors.push( { message: err.message.replace( this.basePath, '' ), code: err.code, location: err.location ? err.location : null } );
 
-			return;
+			return result;
 
 		}
 

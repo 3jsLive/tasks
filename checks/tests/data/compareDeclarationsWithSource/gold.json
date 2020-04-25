@@ -1,5 +1,6 @@
 {
 	"errors": [],
+	"hits": 26,
 	"results": {
 		"src/renderers/shaders/ShaderChunk.js": {
 			"errors": [],
