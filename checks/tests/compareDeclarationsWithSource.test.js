@@ -6,7 +6,6 @@ const sinon = require( 'sinon' );
 
 const checkClass = require( `../src/compareDeclarationsWithSource` );
 const tsmorph = require( 'ts-morph' );
-const acorn = require( 'acorn' );
 
 const testBasePath = `${__dirname}/data/compareDeclarationsWithSource/`;
 const testWrongPath = `${__dirname}/data/compareDeclarationsWithSource/src/`;
@@ -14,6 +13,7 @@ const goldData = JSON.parse( fs.readFileSync( `${__dirname}/data/compareDeclarat
 const goldSourceFiles = JSON.parse( fs.readFileSync( `${__dirname}/data/compareDeclarationsWithSource/gold-SourceFiles.json`, 'utf8' ) );
 const goldNoFilesFound = JSON.parse( fs.readFileSync( `${__dirname}/data/compareDeclarationsWithSource/gold-NoFilesFound.json`, 'utf8' ) );
 const goldAcornThrows = JSON.parse( fs.readFileSync( `${__dirname}/data/compareDeclarationsWithSource/gold-AcornThrows.json`, 'utf8' ) );
+const goldConsistencyCheck = JSON.parse( fs.readFileSync( `${__dirname}/data/compareDeclarationsWithSource/gold-ConsistencyCheck.json`, 'utf8' ) );
 
 
 describe( `compareDeclarationsWithSource`, function () {
@@ -88,6 +88,26 @@ describe( `compareDeclarationsWithSource`, function () {
 		assert.deepStrictEqual( result, goldAcornThrows );
 
 		fs.readFileSync.restore();
+
+	} );
+
+	it( 'error: consistency check fails', async function ( ) {
+
+		// analyze
+		const check = new checkClass( testBasePath, this.tempOut );
+
+		// stub
+		sinon.stub( check, '_difference' )
+			.onFirstCall()
+			.returns( [ 'foo' ] );
+
+		check._difference.callThrough();
+
+		const result = await check.run();
+
+		assert.deepStrictEqual( result, goldConsistencyCheck );
+
+		check._difference.restore();
 
 	} );
 

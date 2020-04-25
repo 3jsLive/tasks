@@ -1,0 +1,64 @@
+{
+	"errors": [],
+	"hits": 13,
+	"results": {
+		"src/renderers/shaders/ShaderChunk.js": {
+			"errors": [
+				{
+					"message": "Different imports vs exports: foo",
+					"code": null,
+					"location": null
+				}
+			],
+			"hits": 0,
+			"results": []
+		},
+		"src/renderers/shaders/ShaderLib.js": {
+			"errors": [],
+			"hits": 0,
+			"results": [
+				{
+					"onlyDecl": {
+						"methods": [],
+						"properties": []
+					},
+					"onlySource": {
+						"methods": [],
+						"properties": []
+					}
+				}
+			]
+		},
+		"src/renderers/shaders/UniformsLib.js": {
+			"errors": [],
+			"hits": 13,
+			"results": [
+				{
+					"onlyDecl": {
+						"methods": [],
+						"properties": [
+							"lights.hemisphereLights.properties.skycolor"
+						]
+					},
+					"onlySource": {
+						"methods": [],
+						"properties": [
+							"lights.lightProbe.value",
+							"lights.pointLights.properties.shadowCameraNear",
+							"lights.pointLights.properties.shadowCameraFar",
+							"lights.hemisphereLights.properties.skyColor",
+							"points.alphaMap.value",
+							"sprite.diffuse.value",
+							"sprite.opacity.value",
+							"sprite.center.value",
+							"sprite.rotation.value",
+							"sprite.map.value",
+							"sprite.alphaMap.value",
+							"sprite.uvTransform.value"
+						]
+					}
+				}
+			]
+		}
+	}
+}

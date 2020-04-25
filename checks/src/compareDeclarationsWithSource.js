@@ -137,7 +137,7 @@ class CompareDeclarationsWithSource extends BaseCheck {
 
 			this.logger.error( err );
 
-			result.errors.push( { message: err.message.replace( this.basePath, '' ), code: err.code, location: err.location ? err.location : null } );
+			result.errors.push( { message: err.message.replace( this.basePath, '' ), code: ( err.code ) ? err.code : null, location: err.location ? err.location : null } );
 
 			return result;
 
