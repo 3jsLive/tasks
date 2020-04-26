@@ -67,6 +67,9 @@ function getExamplesModulesTs( basePath, writeToFile = false ) {
 	const project = new Project( { compilerOptions: { removeComments: false } } );
 	const files = project.addExistingSourceFiles( path.join( basePath, 'examples/**/*.d.ts' ) );
 
+	if ( files.length === 0 )
+		throw new Error( 'No .d.ts files found' );
+
 	const class2file = files.reduce( ( result, file ) => {
 
 		file.getExportedDeclarations().forEach( ( decl/* , name */ ) => {
@@ -104,6 +107,9 @@ function getExamplesModulesJs( basePath, writeToFile = false ) {
 
 	const project = new Project( { compilerOptions: { removeComments: false, allowJs: true } } );
 	const files = project.addExistingSourceFiles( path.join( basePath, 'examples/jsm/**/*.js' ) );
+
+	if ( files.length === 0 )
+		throw new Error( 'No .js files found' );
 
 	const class2file = files.reduce( ( result, file ) => {
 
