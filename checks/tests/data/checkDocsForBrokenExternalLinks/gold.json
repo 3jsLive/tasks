@@ -1,5 +1,6 @@
 {
 	"errors": [],
+	"hits": 4,
 	"results": {
 		"docs/api/en/foo/test.html": {
 			"errors": [],
@@ -7,6 +8,13 @@
 			"results": [
 				"https://httpstat.us/400",
 				"https://httpstat.us/401",
+				"https://httpstat.us/403"
+			]
+		},
+		"docs/api/en/foo/test2.html": {
+			"errors": [],
+			"hits": 1,
+			"results": [
 				"https://httpstat.us/403"
 			]
 		}

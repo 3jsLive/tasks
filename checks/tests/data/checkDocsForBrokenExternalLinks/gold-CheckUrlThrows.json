@@ -1,0 +1,31 @@
+{
+	"errors": [],
+	"hits": 13,
+	"results": {
+		"docs/api/en/foo/test.html": {
+			"errors": [],
+			"hits": 9,
+			"results": [
+				"https://httpstat.us/200",
+				"https://httpstat.us/301",
+				"https://httpstat.us/304",
+				"https://httpstat.us/307",
+				"https://httpstat.us/308",
+				"https://httpstat.us/400",
+				"https://httpstat.us/401",
+				"https://httpstat.us/403",
+				"https://httpstat.us/500"
+			]
+		},
+		"docs/api/en/foo/test2.html": {
+			"errors": [],
+			"hits": 4,
+			"results": [
+				"https://httpstat.us/200",
+				"https://httpstat.us/301",
+				"https://httpstat.us/304",
+				"https://httpstat.us/403"
+			]
+		}
+	}
+}

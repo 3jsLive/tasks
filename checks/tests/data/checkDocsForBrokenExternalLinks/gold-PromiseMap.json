@@ -1,0 +1,11 @@
+{
+	"errors": [
+		{
+			"location": null,
+			"message": "",
+			"name": "PromiseMapRejection"
+		}
+	],
+	"hits": 0,
+	"results": {}
+}

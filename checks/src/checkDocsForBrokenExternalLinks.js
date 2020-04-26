@@ -3,6 +3,12 @@
 	Check for broken external links
 		i.e. [link:http...]
 
+	Type: Static
+	Needs build: No
+	Needs docs: Yes
+	Needs examples: No
+	Needs source: No
+
 */
 
 const Promise = require( 'bluebird' );
@@ -10,7 +16,7 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const urlExists = require( 'url-exists-deep' );
 const dochandler = require( 'dochandler' );
-const lister = require( 'listfiles' );
+const glob = require( 'glob' );
 
 const BaseCheck = require( './BaseCheck' );
 const CacheMixin = require( './CacheMixin' );
@@ -18,14 +24,14 @@ const CacheMixin = require( './CacheMixin' );
 
 class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.json', BaseCheck ) {
 
-	async generateListOfFiles() {
+	generateListOfFiles() {
 
 		try {
 
-			// get the list of valid doc files (probably some inefficiencies there with path.join and path.relative)
-			this.files = lister.docs( { basePath: this.basePath, baseUrl: path.join( this.basePath, 'docs/' ) } ).urls.map( file => (
+			// all docs, everywhere
+			this.files = glob.sync( path.join( this.basePath, 'docs', '{api,examples,manual,scenes}', '**', '*.html' ) ).map( file =>
 				( { absolute: file, relative: path.relative( this.basePath, file ) } )
-			) );
+			);
 
 		} catch ( err ) {
 
@@ -88,7 +94,7 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 		// file errors
 		const errors = {};
 
-		await this.generateListOfFiles();
+		this.generateListOfFiles();
 
 		//
 		// loop over all files and extract candidates for links
@@ -198,6 +204,9 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 				// filter out any results with online URLs or no errors
 				const broken = flattened.filter( x => x.response !== true );
 
+				// total number of hits over all entries
+				let totalHits = 0;
+
 				// reduce to object
 				const results = broken.reduce( ( all, val ) => {
 
@@ -208,8 +217,9 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 					// add the failed URL
 					all[ val.file ].results.push( val.url );
 
-					// increment counter
+					// increment counters
 					all[ val.file ].hits ++;
+					totalHits ++;
 
 					return all;
 
@@ -221,7 +231,7 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 
 				this.logger.debug( "results", results );
 
-				return { errors: [], results };
+				return { errors: [], results, hits: totalHits };
 
 			} )
 			.catch( err => {
