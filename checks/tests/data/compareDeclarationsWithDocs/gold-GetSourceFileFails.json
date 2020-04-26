@@ -1,6 +1,6 @@
 {
 	"errors": [],
-	"hits": 21,
+	"hits": 18,
 	"results": {
 		"docs/api/en/constants/Animation.html": {
 			"errors": [
@@ -93,39 +93,15 @@
 			]
 		},
 		"docs/api/en/lights/shadows/LightShadow.html": {
-			"errors": [],
-			"hits": 3,
-			"results": [
+			"errors": [
 				{
-					"diff": {
-						"methods": [
-							{
-								"decl": {
-									"name": "getFrustum",
-									"type": "number"
-								},
-								"docs": {
-									"name": "getFrustum",
-									"type": "Frustum"
-								}
-							}
-						],
-						"properties": []
-					},
-					"onlyDecl": {
-						"methods": [
-							"getViewport"
-						],
-						"properties": []
-					},
-					"onlyDocs": {
-						"methods": [
-							"getViewportCount"
-						],
-						"properties": []
-					}
+					"location": null,
+					"message": "Foo",
+					"code": null
 				}
-			]
+			],
+			"hits": 0,
+			"results": []
 		},
 		"docs/api/en/lights/SpotLight.html": {
 			"errors": [],

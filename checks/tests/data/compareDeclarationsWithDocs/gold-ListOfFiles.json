@@ -1,0 +1,62 @@
+[
+	{
+		"topology": "/constants/Animation",
+		"basename": "Animation",
+		"relative": "docs/api/en/constants/Animation.html"
+	},
+	{
+		"topology": "/core/bufferAttributeTypes/BufferAttributeTypes",
+		"basename": "BufferAttributeTypes",
+		"relative": "docs/api/en/core/bufferAttributeTypes/BufferAttributeTypes.html"
+	},
+	{
+		"topology": "/geometries/ConeGeometry",
+		"basename": "ConeBufferGeometry",
+		"relative": "docs/api/en/geometries/ConeBufferGeometry.html"
+	},
+	{
+		"topology": "/geometries/ConeGeometry",
+		"basename": "ConeGeometry",
+		"relative": "docs/api/en/geometries/ConeGeometry.html"
+	},
+	{
+		"topology": "/lights/LightShadow",
+		"basename": "LightShadow",
+		"relative": "docs/api/en/lights/shadows/LightShadow.html"
+	},
+	{
+		"topology": "/lights/SpotLightShadow",
+		"basename": "SpotLightShadow",
+		"relative": "docs/api/en/lights/shadows/SpotLightShadow.html"
+	},
+	{
+		"topology": "/lights/SpotLight",
+		"basename": "SpotLight",
+		"relative": "docs/api/en/lights/SpotLight.html"
+	},
+	{
+		"topology": "/loaders/ImageLoader",
+		"basename": "ImageLoader",
+		"relative": "docs/api/en/loaders/ImageLoader.html"
+	},
+	{
+		"topology": "/loaders/DefaultLoadingManager",
+		"basename": "DefaultLoadingManager",
+		"relative": "docs/api/en/loaders/managers/DefaultLoadingManager.html"
+	},
+	{
+		"topology": "/loaders/LoadingManager",
+		"basename": "LoadingManager",
+		"relative": "docs/api/en/loaders/managers/LoadingManager.html"
+	},
+	{
+		"topology": "/objects/InstancedMesh",
+		"basename": "InstancedMesh",
+		"relative": "docs/api/en/objects/InstancedMesh.html"
+	},
+	{
+		"topology": "/polyfills",
+		"basename": "Polyfills",
+		"relative": "docs/api/en/Polyfills.html"
+	}
+]

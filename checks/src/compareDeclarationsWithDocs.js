@@ -6,6 +6,12 @@
 	Some hacks required because not everything maps neatly
 	from foo.html -> foo.d.ts -> class 'foo'
 
+	Type: Static
+	Needs build: No
+	Needs docs: Yes
+	Needs examples: No
+	Needs source: Yes
+
 	TODO: extend to examples/
 
 	TODO: check function parameters as well
@@ -14,64 +20,64 @@
 
 	TODO: zh docs?
 
+	TODO: in serious need of some refactoring-love
+
 */
 
 const fs = require( 'fs' );
 const path = require( 'path' );
 const dochandler = require( 'dochandler' );
 const tsmorph = require( 'ts-morph' );
-const lister = require( 'listfiles' );
+const glob = require( 'glob' );
 
 const BaseCheck = require( './BaseCheck' );
 
 
 class CompareDeclarationsWithDocs extends BaseCheck {
 
-	async generateListOfFiles() {
+	generateListOfFiles() {
 
-		// load docs
+		// list files
 		try {
 
-			const docs = lister.docs( { basePath: this.basePath } );
-			this.apiSlugs = Object.keys( docs.pages )
-				.filter( url => url.startsWith( 'api/en/' ) )
-				.map( slug => {
+			this.files = glob.sync( path.join( this.basePath, 'docs', 'api', 'en', '**', '*.html' ) ).map( file => {
 
-					const basename = path.basename( slug );
+				const basename = path.basename( file, '.html' );
 
-					// overrides
-					let topology = slug.replace( 'api/en', '' );
-					if ( /\/(?!Instanced)\w+BufferGeometry$/i.test( topology ) === true )
-						topology = topology.replace( 'BufferGeometry', 'Geometry' );
-					else if ( topology.startsWith( 'lights/shadows/' ) === true )
-						topology = topology.replace( 'lights/shadows/', 'lights/' );
-					else if ( topology.includes( 'loaders/managers/' ) === true )
-						topology = topology.replace( 'loaders/managers/', 'loaders/' );
-					else if ( topology === 'Polyfills' )
-						topology = 'polyfills';
+				// overrides
+				let topology = file.replace( path.join( this.basePath, 'docs', 'api', 'en' ), '' ).replace( '.html', '' );
 
-					return {
-						topology: topology,
-						basename: ( basename === 'Math' ) ? '_Math' : basename, // more override
-						relative: path.join( 'docs', slug + '.html' ),
-						absolute: path.join( this.basePath, 'docs', slug + '.html' )
-					};
+				if ( /\/(?!Instanced)\w+BufferGeometry$/i.test( topology ) === true )
+					topology = topology.replace( 'BufferGeometry', 'Geometry' );
+				else if ( topology.startsWith( '/lights/shadows/' ) === true )
+					topology = topology.replace( '/lights/shadows/', '/lights/' );
+				else if ( topology.includes( 'loaders/managers/' ) === true )
+					topology = topology.replace( 'loaders/managers/', 'loaders/' );
+				else if ( topology === '/Polyfills' )
+					topology = '/polyfills';
 
-				} );
+				return {
+					topology: topology,
+					basename: ( basename === 'Math' ) ? '_Math' : basename, // more override
+					relative: path.relative( this.basePath, file )
+				};
+
+			} );
 
 		} catch ( err ) {
 
-			this.logger.fatal( 'Listing docs failed:', err );
+			this.logger.fatal( 'Listing files failed:', err );
 
 			throw err;
 
 		}
 
-		if ( ! this.apiSlugs || this.apiSlugs.length === 0 )
-			throw new Error( 'No doc files found' );
+		if ( ! this.files || this.files.length === 0 )
+			throw new Error( 'No files found' );
+
+		return this.files;
 
 	}
-
 
 	async worker() {
 
@@ -79,35 +85,35 @@ class CompareDeclarationsWithDocs extends BaseCheck {
 		const project = new tsmorph.Project();
 		project.addExistingSourceFiles( path.join( this.basePath, 'src/**/*.d.ts' ) );
 
-
 		// results
 		let results = {};
+		let totalHits = 0;
 
+		// cleanup
+		const importStripper = new RegExp( `^import\\("${this.basePath}.+?"\\)\.(\\w+)$` );
 
 		await this.generateListOfFiles();
 
-
-		for ( const slug of this.apiSlugs ) {
+		for ( const file of this.files ) {
 
 			let result = {
 				onlyDocs: { properties: [], methods: [] },
 				onlyDecl: { properties: [], methods: [] },
-				diff: { properties: [], methods: [] }/* ,
-				error: false,
-				warning: false */
+				diff: { properties: [], methods: [] }
 			};
 
 			let doc;
+			const absolutePath = path.join( this.basePath, file.relative );
 
 			try {
 
-				doc = dochandler.parseDoc.parseFile( slug.absolute );
+				doc = dochandler.parseDoc.parseFile( absolutePath );
 
 			} catch ( err ) {
 
-				this.logger.error( slug.absolute + ':', err );
+				this.logger.error( absolutePath + ':', err );
 
-				results[ slug.relative ] = { errors: [ ( err.message ) ? err.message.replace( this.basePath, '' ) : err ], hits: 0, results: [] };
+				results[ file.relative ] = { errors: [ { message: ( err.message ) ? err.message.replace( this.basePath, '' ) : err, code: null, location: null } ], hits: 0, results: [] };
 
 				continue;
 
@@ -116,29 +122,29 @@ class CompareDeclarationsWithDocs extends BaseCheck {
 
 			// more special cases
 			if (
-				slug.topology.startsWith( 'constants/' ) === true ||
-				slug.topology.startsWith( 'deprecated/DeprecatedList' ) === true ||
-				slug.topology.startsWith( 'core/bufferAttributeTypes/' ) === true
+				file.topology.startsWith( '/constants/' ) === true ||
+				file.topology.startsWith( '/deprecated/DeprecatedList' ) === true ||
+				file.topology.startsWith( '/core/bufferAttributeTypes/' ) === true ||
+				file.topology.startsWith( '/polyfills' ) === true ||
+				file.topology.startsWith( '/loaders/DefaultLoadingManager' ) === true
 			) {
 
-				this.logger.debug( `Skipping ${slug.relative} because of topology: ${slug.topology}` );
+				this.logger.log( `Skipping ${file.relative} because of topology: ${file.topology}` );
 
-				results[ slug.relative ] = { errors: [ 'File skipped because of marked topology' ], hits: 0, results: [] };
+				results[ file.relative ] = { errors: [ { message: `File skipped according to blacklist`, location: null, code: null } ], hits: 0, results: [] };
 
 				continue;
 
 			}
 
-
-			// this.logger.note( { slug } );
-
+			this.logger.log( file.relative );
 
 			try {
 
-				const declFile = project.getSourceFileOrThrow( path.join( this.basePath, 'src', slug.topology + '.d.ts' ) );
+				const declFile = project.getSourceFileOrThrow( path.join( this.basePath, 'src', file.topology + '.d.ts' ) );
 
 				// some files have no class in them but just a namespace (e.g. Math)
-				const declClassOrNamespace = declFile.getClass( slug.basename ) || declFile.getNamespaceOrThrow( slug.basename );
+				const declClassOrNamespace = declFile.getClass( file.basename ) || declFile.getNamespaceOrThrow( file.basename );
 
 				// if we have a constructor -> use that
 				// if no constructor, but a base class -> use their constructor
@@ -176,10 +182,10 @@ class CompareDeclarationsWithDocs extends BaseCheck {
 
 				result.diff.properties = declPropsFull.reduce( ( all, prop ) => {
 
-					const diff = this._sameNameDifferentType( prop, [ ...htmlPropsFull ], slug.basename );
+					const diff = this._sameNameDifferentType( prop, [ ...htmlPropsFull ], file.basename );
 
 					if ( diff )
-						all.push( { decl: { name: prop.name, type: prop.type.getText() }, docs: diff } );
+						all.push( { decl: { name: prop.name, type: prop.type.getText().replace( importStripper, '$1' ) }, docs: diff } );
 
 					return all;
 
@@ -187,10 +193,10 @@ class CompareDeclarationsWithDocs extends BaseCheck {
 
 				result.diff.methods = declMethodsFull.reduce( ( all, method ) => {
 
-					const diff = this._sameNameDifferentType( method, [ ...htmlMethodsFull ], slug.basename );
+					const diff = this._sameNameDifferentType( method, [ ...htmlMethodsFull ], file.basename );
 
 					if ( diff )
-						all.push( { decl: { name: method.name, type: method.type.getText() }, docs: diff } );
+						all.push( { decl: { name: method.name, type: method.type.getText().replace( importStripper, '$1' ) }, docs: diff } );
 
 					return all;
 
@@ -199,32 +205,28 @@ class CompareDeclarationsWithDocs extends BaseCheck {
 
 				// debugging
 				if ( result.onlyDocs.properties.length > 0 )
-					this.logger.info( `These properties appear only in the docs: ${result.onlyDocs.properties.join( ', ' )}` );
+					this.logger.debug( `These properties appear only in the docs: ${result.onlyDocs.properties.join( ', ' )}` );
 
 				if ( result.onlyDecl.properties.length > 0 )
-					this.logger.info( `These properties appear only in the .d.ts: ${result.onlyDecl.properties.join( ', ' )}` );
+					this.logger.debug( `These properties appear only in the .d.ts: ${result.onlyDecl.properties.join( ', ' )}` );
 
 				if ( result.onlyDocs.methods.length > 0 )
-					this.logger.info( `These methods appear only in the docs: ${result.onlyDocs.methods.join( ', ' )}` );
+					this.logger.debug( `These methods appear only in the docs: ${result.onlyDocs.methods.join( ', ' )}` );
 
 				if ( result.onlyDecl.methods.length > 0 )
-					this.logger.info( `These methods appear only in the .d.ts: ${result.onlyDecl.methods.join( ', ' )}` );
-
-				this.logger.log( '=================' );
+					this.logger.debug( `These methods appear only in the .d.ts: ${result.onlyDecl.methods.join( ', ' )}` );
 
 				if ( result.diff.properties.length > 0 )
-					this.logger.info( `These properties' types are different: ${result.diff.properties.map( x => this._stringifyDiff( x ) ).join( ', ' )}` );
+					this.logger.debug( `These properties' types are different: ${result.diff.properties.map( x => this._stringifyDiff( x ) ).join( ', ' )}` );
 
 				if ( result.diff.methods.length > 0 )
-					this.logger.info( `These methods' types are different: ${result.diff.methods.map( x => this._stringifyDiff( x ) ).join( ', ' )}` );
-
-				this.logger.log( '=================' );
+					this.logger.debug( `These methods' types are different: ${result.diff.methods.map( x => this._stringifyDiff( x ) ).join( ', ' )}` );
 
 				for ( const cst of declConstructorOrBaseOrEmpty ) {
 
 					this.logger.debug( 'DECL Constructor:',
 						( cst.getParameters().length > 0 ) ?
-							cst.getParameters().map( p => `${p.getName()}: ${p.getType().getText()}` ).join( ', ' ) :
+							cst.getParameters().map( p => `${p.getName()}: ${p.getType().getText().replace( importStripper, '$1' )}` ).join( ', ' ) :
 							'-- no params --'
 					);
 
@@ -240,44 +242,11 @@ class CompareDeclarationsWithDocs extends BaseCheck {
 
 				}
 
-				// console.log( '=================' );
-
-				// logger.debug( `DECL props: %o`, declPropsFull.map( x => `${x.name}: ${x.type.getText()}` ).join( ', ' ) );
-				// logger.debug( `HTML props: %o`, htmlPropsFull.map( x => `${x.name}: ${x.type}` ).join( ', ' ) );
-				// logger.debug( `DECL methods: %o`, declMethodsFull.map( x => `${x.name}: ${x.type.getText()}` ).join( ', ' ) );
-				// logger.debug( `HTML methods: %o`, htmlMethodsFull.map( x => `${x.name}: ${x.type}` ).join( ', ' ) );
-
-				// console.log( '=================' );
-
-				/*
-				console.log( '  DECL Props diff:', [ ...differencesByName.properties.onlyInDecl ].join( ', ' ) );
-				console.log( '  HTML Props diff:', [ ...differencesByName.properties.onlyInDocs ].join( ', ' ) );
-				console.log( 'DECL Methods diff:', [ ...differencesByName.methods.onlyInDecl ].join( ', ' ) );
-				console.log( 'HTML Methods diff:', [ ...differencesByName.methods.onlyInDocs ].join( ', ' ) );
-
-				console.log( '=================' );
-
-				console.log( '  Props same name:', declPropsFull.filter( p => _sameNameSameType( p, [ ...htmlPropsFull ] ) ).map( p => p.name ).join( ', ' ) );
-				console.log( 'Methods same name:', declMethodsFull.filter( m => _sameNameSameType( m, [ ...htmlMethodsFull ] ) ).map( m => m.name ).join( ', ' ) );
-
-				console.log( '=================' );
-
-				console.log( '  Props same name, wrong type:', differencesByType.properties.map( p => `${p.name}: ${p.type.getText()}` ).join( ', ' ) );
-				console.log( 'Methods same name, wrong type:', differencesByType.methods.map( m => `${m.name}: ${m.type.getText()}` ).join( ', ' ) );
-				*/
-
-				// console.log( '############' );
-
 			} catch ( err ) {
 
-				this.logger.error( '\t\t\t\t\t\t\t\t\t\tFailed', err.message.replace( 'Expected to find namespace', 'Expected to find class or namespace' ), '\n' );
-				// console.log( util.inspect( err, true ) );
 				this.logger.error( err );
-				this.logger.error( '############' );
 
-				// result[ 'error' ] = err.message.replace( basePath, '' );
-
-				results[ slug.relative ] = { errors: [ ( err.message ) ? err.message.replace( this.basePath, '' ) : err ], hits: 0, results: [] };
+				results[ file.relative ] = { errors: [ { message: ( err.message ) ? err.message.replace( this.basePath, '' ) : err, code: null, location: null } ], hits: 0, results: [] };
 
 				continue;
 
@@ -288,16 +257,17 @@ class CompareDeclarationsWithDocs extends BaseCheck {
 			const hits = result.onlyDecl.properties.length + result.onlyDecl.methods.length +
 						 result.onlyDocs.properties.length + result.onlyDocs.methods.length +
 						 result.diff.properties.length + result.diff.methods.length;
-
+			totalHits += hits;
 
 			//
 			// done
 			//
-			results[ slug.relative ] = { errors: [], hits: hits, results: [ result ] };
+			if ( hits > 0 )
+				results[ file.relative ] = { errors: [], hits: hits, results: [ result ] };
 
 		}
 
-		return { errors: [], results };
+		return { errors: [], hits: totalHits, results };
 
 	}
 
@@ -416,7 +386,7 @@ class CompareDeclarationsWithDocs extends BaseCheck {
 		}
 
 
-		this.logger.star( `---TYPES "${aText}" "${bText}"` );
+		this.logger.debug( `---TYPES "${aText}" "${bText}"` );
 
 		return false;
 
