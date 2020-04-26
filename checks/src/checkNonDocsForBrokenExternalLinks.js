@@ -3,13 +3,19 @@
 	Check for broken external links
 		i.e. <a href="http... or just http://...
 
+	Type: Static
+	Needs build: No
+	Needs docs: No
+	Needs examples: Yes
+	Needs source: Yes
+
 */
 
 const Promise = require( 'bluebird' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const urlExists = require( 'url-exists-deep' );
-const glob = Promise.promisifyAll( require( 'glob' ) );
+const glob = require( 'glob' );
 
 const BaseCheck = require( './BaseCheck' );
 const CacheMixin = require( './CacheMixin' );
@@ -21,9 +27,9 @@ class CheckNonDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_NonDo
 
 		try {
 
-			const allFiles = glob.globAsync( path.join( this.basePath, '{examples/**/*.js,examples/**/*.d.ts,examples/*.html,src/**/*.js,src/**/*.d.ts}' ) );
-
-			this.files = await Promise.map( allFiles, ( file ) => ( { absolute: file, relative: path.relative( this.basePath, file ) } ) );
+			this.files = glob.sync( path.join( this.basePath, '{examples/**/*.js,examples/**/*.d.ts,examples/*.html,src/**/*.js,src/**/*.d.ts}' ) ).map( file =>
+				( { absolute: file, relative: path.relative( this.basePath, file ) } )
+			);
 
 		} catch ( err ) {
 
@@ -184,6 +190,9 @@ class CheckNonDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_NonDo
 				// filter out any results with online URLs or no errors
 				const broken = flattened.filter( x => x.response !== true );
 
+				// total hits over all files
+				let totalHits = 0;
+
 				// reduce to object
 				const results = broken.reduce( ( all, val ) => {
 
@@ -194,8 +203,9 @@ class CheckNonDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_NonDo
 					// add the failed URL
 					all[ val.file ].results.push( val.url );
 
-					// increment counter
+					// increment counters
 					all[ val.file ].hits ++;
+					totalHits ++;
 
 					return all;
 
@@ -207,7 +217,7 @@ class CheckNonDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_NonDo
 
 				this.logger.debug( "results", results );
 
-				return { errors: [], results };
+				return { errors: [], results, hits: totalHits };
 
 			} )
 			.catch( err => {

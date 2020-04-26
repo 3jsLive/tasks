@@ -1,0 +1,36 @@
+{
+	"errors": [],
+	"hits": 18,
+	"results": {
+		"examples/example-tags.html": {
+			"errors": [],
+			"hits": 9,
+			"results": [
+				"https://httpstat.us/200",
+				"https://httpstat.us/301",
+				"https://httpstat.us/304",
+				"https://httpstat.us/307",
+				"https://httpstat.us/308",
+				"https://httpstat.us/400",
+				"https://httpstat.us/401",
+				"https://httpstat.us/403",
+				"https://httpstat.us/500"
+			]
+		},
+		"examples/example-raw.html": {
+			"errors": [],
+			"hits": 9,
+			"results": [
+				"https://httpstat.us/200",
+				"https://httpstat.us/301",
+				"https://httpstat.us/304",
+				"https://httpstat.us/307",
+				"https://httpstat.us/308",
+				"https://httpstat.us/400",
+				"https://httpstat.us/401",
+				"https://httpstat.us/403",
+				"https://httpstat.us/500"
+			]
+		}
+	}
+}
