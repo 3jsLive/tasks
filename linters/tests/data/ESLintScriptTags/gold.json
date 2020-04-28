@@ -1,8 +1,10 @@
 {
 	"errors": [],
+	"hits": 9,
 	"results": {
 		"examples/webgl_loader_ldraw.html": {
 			"errors": [],
+			"hits": 9,
 			"results": [
 				{
 					"line": 142,

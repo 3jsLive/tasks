@@ -26,7 +26,7 @@ class StyleLint extends BaseLinter {
 
 
 	/**
-	 * @returns {{ errors: any[], results: Object.<string, { errors: any[], results: { line: number, ruleId: any, severity: any, message: string }[] }> } }
+	 * @returns {{ errors: any[], hits: number, results: Object.<string, { errors: any[], hits: number, results: { line: number, ruleId: any, severity: any, message: string }[] }> } }
 	 */
 	async worker() {
 
@@ -39,6 +39,7 @@ class StyleLint extends BaseLinter {
 				files: this.files
 			} );
 
+			let totalHits = 0;
 			const final = results.results.filter( result => result.errored || result.ignored ).reduce( ( all, result ) => {
 
 				const relPath = path.relative( this.basePath, result.source );
@@ -52,19 +53,21 @@ class StyleLint extends BaseLinter {
 				if ( result.parseErrors.length > 0 ) {
 
 					this.logger.error( 'result.parseErrors', result.parseErrors );
-					all[ relPath ] = { errors: result.parseErrors, results: warnings };
+					all[ relPath ] = { errors: result.parseErrors, results: warnings, hits: warnings.length };
 
 				} else {
 
-					all[ relPath ] = { errors: [], results: warnings };
+					all[ relPath ] = { errors: [], results: warnings, hits: warnings.length };
 
 				}
+
+				totalHits += warnings.length;
 
 				return all;
 
 			}, {} );
 
-			return { errors: [], results: final };
+			return { errors: [], results: final, hits: totalHits };
 
 		} catch ( err ) {
 

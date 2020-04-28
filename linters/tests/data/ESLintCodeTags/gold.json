@@ -1,1 +1,30 @@
-{"errors":[],"results":{"docs/examples/en/foo/faulty.html":{"errors":[],"results":[{"line":29,"message":"Unexpected space before function parentheses.","ruleId":"space-before-function-paren","severity":2},{"line":29,"message":"Block must be padded by blank lines.","ruleId":"padded-blocks","severity":2},{"line":31,"message":"Block must be padded by blank lines.","ruleId":"padded-blocks","severity":2}]}}}
+{
+	"errors": [],
+	"hits": 3,
+	"results": {
+		"docs/examples/en/foo/faulty.html": {
+			"errors": [],
+			"hits": 3,
+			"results": [
+				{
+					"line": 29,
+					"message": "Unexpected space before function parentheses.",
+					"ruleId": "space-before-function-paren",
+					"severity": 2
+				},
+				{
+					"line": 29,
+					"message": "Block must be padded by blank lines.",
+					"ruleId": "padded-blocks",
+					"severity": 2
+				},
+				{
+					"line": 31,
+					"message": "Block must be padded by blank lines.",
+					"ruleId": "padded-blocks",
+					"severity": 2
+				}
+			]
+		}
+	}
+}

@@ -36,7 +36,7 @@ class ESLintJsFiles extends BaseLinter {
 
 
 	/**
-	 * @returns {{ errors: any[], results: Object.<string, { errors: any[], results: { line: number, ruleId: string, severity: number, message: string }[] }> } }
+	 * @returns {{ errors: any[], hits: number, results: Object.<string, { errors: any[], hits: number, results: { line: number, ruleId: string, severity: number, message: string }[] }> } }
 	 */
 	async worker() {
 
@@ -51,6 +51,7 @@ class ESLintJsFiles extends BaseLinter {
 		} );
 
 		let final = {};
+		let totalHits = 0;
 
 		this.files.forEach( file => {
 
@@ -58,7 +59,7 @@ class ESLintJsFiles extends BaseLinter {
 
 				this.logger.error( `File not found: ${file.relative}` );
 
-				final[ file.relative ] = { errors: [ 'File not found' ], results: [] };
+				final[ file.relative ] = { errors: [ { message: 'File not found' } ], hits: 0, results: [] };
 
 				return;
 
@@ -80,13 +81,14 @@ class ESLintJsFiles extends BaseLinter {
 
 					if ( results.length > 0 ) {
 
-						final[ file.relative ] = { errors: [], results };
+						final[ file.relative ] = { errors: [], results, hits: results.length };
+						totalHits += results.length;
 
 					} else {
 
 						this.logger.error( `Errors/Warnings were found but no results? ${report.errorCount} & ${report.warningCount}` );
 
-						final[ file.relative ] = { errors: [ `Errors/Warnings were found but no results?` ], results: [] };
+						final[ file.relative ] = { errors: [ { message: `Errors/Warnings were found but no results?` } ], hits: 0, results: [] };
 
 					}
 
@@ -100,7 +102,7 @@ class ESLintJsFiles extends BaseLinter {
 
 		} );
 
-		return { errors: [], results: final };
+		return { errors: [], results: final, hits: totalHits };
 
 	}
 

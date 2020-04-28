@@ -1,8 +1,10 @@
 {
 	"errors": [],
+	"hits": 1,
 	"results": {
 		"faulty.html": {
 			"errors": [],
+			"hits": 1,
 			"results": [
 				{
 					"line": 11,

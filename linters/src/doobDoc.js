@@ -38,7 +38,7 @@ class DoobDoc extends BaseLinter {
 
 
 	/**
-	 * @returns {{ errors: any[], results: Object.<string, { errors: any[], results: { line: number, ruleId: number, level: string, message: string, source: string, index: number, length: number }[] }> } }
+	 * @returns {{ errors: any[], hits: number, results: Object.<string, { errors: any[], hits: number, results: { line: number, ruleId: number, level: string, message: string, source: string, index: number, length: number }[] }> } }
 	 */
 	async worker() {
 
@@ -73,7 +73,7 @@ class DoobDoc extends BaseLinter {
 						name: err.name
 					};
 
-					return { file, results: [], errors: [ error ] };
+					return { file, results: [], hits: 0, errors: [ error ] };
 
 				} );
 
@@ -86,11 +86,12 @@ class DoobDoc extends BaseLinter {
 					.filter( x => x.results.length > 0 || x.errors.length > 0 )
 					.reduce( ( all, cur ) => {
 
-						all.results[ cur.file.relative ] = { errors: cur.errors, results: cur.results };
+						all.results[ cur.file.relative ] = { errors: cur.errors, hits: cur.results.length, results: cur.results };
+						all.hits += cur.results.length;
 
 						return all;
 
-					}, { errors: [], results: {} } );
+					}, { errors: [], hits: 0, results: {} } );
 
 			} )
 			.catch( err => {

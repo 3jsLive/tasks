@@ -17,7 +17,6 @@ const lister = require( 'listfiles' );
 
 const BaseLinter = require( './BaseLinter' );
 
-// TODO: class-ify
 
 class ESLintCodeTags extends BaseLinter {
 
@@ -47,7 +46,7 @@ class ESLintCodeTags extends BaseLinter {
 
 
 	/**
-	 * @returns {{ errors: any[], results: Object.<string, { errors: any[], results: { line: number, ruleId: string, severity: number, message: string }[] }> } }
+	 * @returns {{ errors: any[], hits: number, results: Object.<string, { errors: any[], hits: number, results: { line: number, ruleId: string, severity: number, message: string }[] }> } }
 	 */
 	async worker() {
 
@@ -62,6 +61,7 @@ class ESLintCodeTags extends BaseLinter {
 		} );
 
 		let final = {};
+		let totalHits = 0;
 
 		this.files.forEach( file => {
 
@@ -69,7 +69,7 @@ class ESLintCodeTags extends BaseLinter {
 
 				this.logger.error( `File not found: ${file.absolute}` );
 
-				final[ file.relative ] = { errors: [ 'File not found' ], results: [] };
+				final[ file.relative ] = { errors: [ { message: 'File not found' } ], hits: 0, results: [] };
 
 				return;
 
@@ -85,7 +85,7 @@ class ESLintCodeTags extends BaseLinter {
 
 				this.logger.error( file.absolute, 'Error reading:', err );
 
-				final[ file.relative ] = { errors: [ `Error reading: ${err}` ], results: [] };
+				final[ file.relative ] = { errors: [ { message: `Error reading: ${err}` } ], hits: 0, results: [] };
 
 				return;
 
@@ -130,7 +130,7 @@ class ESLintCodeTags extends BaseLinter {
 
 				this.logger.error( 'Error parsing:', err );
 
-				final[ file.relative ] = { errors: [ `Error parsing: ${err}` ], results: [] };
+				final[ file.relative ] = { errors: [ { message: `Error parsing: ${err}` } ], hits: 0, results: [] };
 
 				return;
 
@@ -171,7 +171,7 @@ class ESLintCodeTags extends BaseLinter {
 
 				this.logger.error( file.absolute, 'Error parsing:', err );
 
-				final[ file.relative ] = { errors: [ `Error parsing: ${err}` ], results: [] };
+				final[ file.relative ] = { errors: [ { message: `Error parsing: ${err}` } ], hits: 0, results: [] };
 
 				return;
 
@@ -192,14 +192,18 @@ class ESLintCodeTags extends BaseLinter {
 
 			} );
 
-			if ( results.length > 0 )
-				final[ file.relative ] = { results, errors: [] };
+			if ( results.length > 0 ) {
+
+				final[ file.relative ] = { results, errors: [], hits: results.length };
+				totalHits += results.length;
+
+			}
 
 			this.logger.debug( `Err: ${report.results[ 0 ].errorCount}  Warn: ${report.results[ 0 ].warningCount}  File: ${file.absolute} (${file.relative})` );
 
 		} );
 
-		return { errors: [], results: final };
+		return { errors: [], results: final, hits: totalHits };
 
 	}
 

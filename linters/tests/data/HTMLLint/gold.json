@@ -1,8 +1,10 @@
 {
   "errors": [],
+  "hits": 1,
   "results": {
     "docs/faulty.html": {
       "errors": [],
+      "hits": 1,
       "results": [
         {
           "col": 2,

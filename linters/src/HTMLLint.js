@@ -43,11 +43,12 @@ class HTMLLint extends BaseLinter {
 
 
 	/**
-	 * @returns {{ errors: any[], results: Object.<string, { errors: any[], results: { line: number, col: number, evidence: string, message: string, raw: string, type: string, rule: { description: string, id: string, link: string } }[] }> } }
+	 * @returns {{ errors: any[], hits: number, results: Object.<string, { errors: any[], hits: number, results: { line: number, col: number, evidence: string, message: string, raw: string, type: string, rule: { description: string, id: string, link: string } }[] }> } }
 	 */
 	async worker() {
 
 		let final = {};
+		let totalHits = 0;
 
 		this.files.forEach( file => {
 
@@ -55,7 +56,7 @@ class HTMLLint extends BaseLinter {
 
 				this.logger.error( `File not found: ${file.relative}` );
 
-				final[ file.relative ] = { errors: [ 'File not found' ], results: [] };
+				final[ file.relative ] = { errors: [ { message: 'File not found' } ], hits: 0, results: [] };
 
 				return;
 
@@ -71,7 +72,7 @@ class HTMLLint extends BaseLinter {
 
 				this.logger.error( `Error reading: ${err}` );
 
-				final[ file.relative ] = { errors: [ `Error reading: ${err}` ], results: [] };
+				final[ file.relative ] = { errors: [ { message: `Error reading: ${err}` } ], hits: 0, results: [] };
 
 				return;
 
@@ -85,12 +86,16 @@ class HTMLLint extends BaseLinter {
 
 			} );
 
-			if ( results.length > 0 )
-				final[ file.relative ] = { errors: [], results };
+			if ( results.length > 0 ) {
+
+				final[ file.relative ] = { errors: [], results, hits: results.length };
+				totalHits += results.length;
+
+			}
 
 		} );
 
-		return { errors: [], results: final };
+		return { errors: [], results: final, hits: totalHits };
 
 	}
 
