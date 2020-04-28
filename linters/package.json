@@ -44,6 +44,7 @@
 	},
 	"devDependencies": {
 		"@types/bluebird": "^3.5.28",
-		"mocha": "^6.2.2"
+		"mocha": "^6.2.2",
+		"nyc": "^15.0.1"
 	}
 }
