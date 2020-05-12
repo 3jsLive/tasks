@@ -551,7 +551,7 @@ class Func extends ErrorAndWarnings {
 
 		return {
 			errors: this.errors,
-			examples: this.origin.examples,
+			examples: Array.isArray( this.origin.examples ) ? this.origin.examples : [ this.origin.examples ],
 			original: this.origin.original,
 			name: this.name,
 			returns: this.returns,
@@ -1036,7 +1036,7 @@ class CheckLawVsReality extends BaseCheck {
 
 		}
 
-		return results;
+		return { errors: [], results };
 
 	}
 
