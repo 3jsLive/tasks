@@ -51,8 +51,13 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 
 	checkUrl( url ) {
 
-		if ( this.cacheEnabled === true && this.cache.get( url ) !== undefined )
+		if ( this.cacheEnabled === true && this.cache.get( url ) !== undefined ) {
+
+			this.logger.debug( 'Found', url, 'in cache:', this.cache.get( url ) );
+
 			return this.cache.get( url );
+
+		}
 
 		const result = urlExists( url, {
 			"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -66,10 +71,18 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 		}, 'GET', 30000 )
 			.then( resp => {
 
-				if ( resp )
+				if ( resp ) {
+
 					this.logger.debug( 'URL', url, 'exists' );
-				else
+
+				} else {
+
 					this.logger.debug( 'URL', url, 'does not exist' );
+
+				}
+
+				if ( this.cacheEnabled === true )
+					this.cache.put( url, resp );
 
 				return resp;
 
@@ -80,9 +93,6 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 				return false;
 
 			} );
-
-		if ( this.cacheEnabled === true )
-			this.cache.put( url, result );
 
 		return result;
 
@@ -146,7 +156,8 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 			if ( url.startsWith( '#' ) === true )
 				return { file: linkObj.file.relative, url, response: true };
 
-			return this.checkUrl( url )
+			// return this.checkUrl( url )
+			return Promise.resolve( this.checkUrl( url ) )
 				.then( resp => {
 
 					if ( resp ) {
@@ -173,7 +184,7 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 
 				} );
 
-		}, { concurrency: 4 } )
+		}, { concurrency: 1 } )
 			.catch( err => {
 
 				this.logger.fatal( 'checkedLinks Promise.map failed:', err );
