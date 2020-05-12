@@ -1,3 +1,13 @@
+/*
+
+	Type: Dynamic
+	Needs build: Yes
+	Needs docs: No
+	Needs examples: Yes
+	Needs source: Yes
+
+*/
+
 const puppeteer = require( 'puppeteer' );
 const fs = require( 'fs' );
 const path = require( 'path' );
@@ -71,6 +81,8 @@ class RunUnitTests extends BaseCheck {
 		const page = await this.browser.newPage();
 
 		const events = [];
+		const errors = [];
+		const pageErrors = [];
 
 		page.on( 'console', msg => {
 
@@ -80,13 +92,13 @@ class RunUnitTests extends BaseCheck {
 
 		page.on( 'error', err => {
 
-			events.push( { type: 'error', payload: { text: err.message } } );
+			errors.push( { type: 'error', payload: { text: err.message } } );
 
 		} );
 
 		page.on( 'pageerror', err => {
 
-			events.push( { type: 'pageerror', payload: { text: err.text, type: err.type } } );
+			pageErrors.push( { type: 'pageerror', payload: { text: err.text, type: err.type } } );
 
 		} );
 
@@ -113,7 +125,7 @@ class RunUnitTests extends BaseCheck {
 
 		} );
 
-		let results = { tests: 'error', time: - 1, failed: - 1, skipped: - 1, todo: - 1, events: false };
+		let results = { tests: 'error', time: 0, failed: 0, skipped: 0, todo: 0, events: false };
 
 		const rx = /(\d+) tests.*?in (\d+).*?(\d+) failed.*?(\d+) skipped.*?(\d+) todo/gi;
 		const m = rx.exec( resultsLine );
@@ -125,9 +137,15 @@ class RunUnitTests extends BaseCheck {
 			results.skipped = parseInt( m[ 4 ] );
 			results.todo = parseInt( m[ 5 ] );
 
-		}
+			this.logger.info( `Results: ${results.failed} of ${results.tests} tests failed with ${results.todo} tests todo and ${results.skipped} skipped. Total time: ${results.time}` );
 
-		this.logger.info( `Results: ${results.failed} of ${results.tests} tests failed with ${results.todo} tests todo and ${results.skipped} skipped. Total time: ${results.time}` );
+		} else {
+
+			this.logger.fatal( `Extraction regex failed to find a match in: "${resultsLine}"` );
+
+			pageErrors.push( { type: 'pageerror', payload: { text: 'Extraction failed', type: 'Internal Error' } } );
+
+		}
 
 		await page.close();
 
@@ -137,7 +155,19 @@ class RunUnitTests extends BaseCheck {
 		this.server.close();
 		await this.browser.close();
 
-		return results;
+		return {
+			errors,
+			hits: results.failed,
+			results: {
+				'UNITTESTS': {
+					errors: pageErrors,
+					hits: results.failed,
+					results: [
+						results
+					]
+				}
+			}
+		};
 
 	}
 
