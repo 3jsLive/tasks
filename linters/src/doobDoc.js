@@ -320,6 +320,13 @@ DoobDoc.rules = [
 		regex: [
 			/[^\-<h3>]+\s*\[property:/gi // https://regex101.com/r/KLdmHd/1
 		]
+	}, {
+		id: 'malformed-param',
+		level: 'error',
+		desc: 'param tag is broken',
+		regex: [
+			/(?<![[])param:/gi // https://regex101.com/r/yBfRvN/2
+		]
 	}
 ];
 

@@ -1,0 +1,8 @@
+{
+	"hit": [
+		"[name]([param:Number size], param:Object options])"
+	],
+	"miss": [
+		"[name]([param:Number size], [param:Object options])"
+	]
+}
