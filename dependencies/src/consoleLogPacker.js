@@ -30,7 +30,7 @@ class ConsoleLogPacker {
 		this.logger.config( { displayTimestamp: true, displayDate: true } );
 
 		// result
-		this.consoleLogs = { errors: [], results: {} };
+		this.consoleLogs = { errors: [], hits: 0, results: {} };
 
 	}
 
@@ -45,7 +45,12 @@ class ConsoleLogPacker {
 
 			const demangledExample = path.basename( inputFile ).replace( 'examples_', 'examples/' ).replace( /_consoleLog.+$/, '.html' );
 
-			this.consoleLogs.results[ demangledExample ] = { errors: [], results: data };
+			if ( data.length > 0 ) {
+
+				this.consoleLogs.results[ demangledExample ] = { errors: [], hits: data.length, results: data };
+				this.consoleLogs.hits += data.length;
+
+			}
 
 			// TODO: we could/should deduplicate the log entries
 
