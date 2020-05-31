@@ -45,9 +45,9 @@
 		"baseUrl": "http://127.0.0.1:14227/",
 
 		// fileBase
-		"fileBase": "/tmp/tmp.9yXEdqGt77/3jsRepository/",
+		"fileBase": "/var/3ci/3jsRepository/",
 
-		"resultsBase": "dependencies/results",
+		"resultsBase": "dependencies",
 
 		"shaderLibPath": "src/renderers/shaders/ShaderLib.js",
 		"shaderChunkPath": "src/renderers/shaders/ShaderChunk.js",
@@ -80,7 +80,7 @@
 		"profilerTimeout": 60000,
 
 		// --disable-gl-drawing-for-tests is a doubled-edged sword
-		"puppeteerOptions": [ "--use-gl=swiftshader", "--enable-gpu", "--mute-audio", "--disable-gl-drawing-for-tests" ]
+		"puppeteerOptions": [ "--use-gl=swiftshader", "--enable-gpu", "--mute-audio", "--disable-gl-drawing-for-tests", "--enable-precise-memory-info" ]
 
 	}
 
