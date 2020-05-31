@@ -493,7 +493,7 @@ class DependenciesWorker {
 				// client.removeAllListeners( 'Debugger.paused' );
 
 				// probably only one callFrame to begin with, but better save than sorry
-				const callFrame = event.callFrames.find( cf => cf.url === `${config.dependencies.baseUrl}${config.dependencies.mainScriptPath}` );
+				const callFrame = event.callFrames.find( cf => cf.url.endsWith( config.dependencies.mainScriptPath ) );
 				const threeScriptId = callFrame.location.scriptId;
 
 				const threeLocation = this.lines.locationForIndex( this.source.indexOf( 'function WebGLRenderer( parameters ) {' ) );

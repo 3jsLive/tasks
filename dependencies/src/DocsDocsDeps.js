@@ -63,7 +63,7 @@ function run( basePath, input ) {
 
 		logger.fatal( `parseDocs results file is broken` );
 
-		return { errors: [ `parseDocs results file is broken` ], results: {} };
+		return { errors: [ { message: `parseDocs results file is broken` } ], hits: 0, results: {} };
 
 	}
 
@@ -85,10 +85,11 @@ function run( basePath, input ) {
 	//
 	let allResults = {};
 	let allErrors = [];
+	let totalHits = 0;
 
 	for ( const [ docFilename, { errors, results } ] of Object.entries( parseDocsResults ) ) {
 
-		let retval = { errors: [], results: [] };
+		let retval = { errors: [], results: [], hits: 0 };
 
 		if ( errors.length > 0 ) {
 
@@ -154,6 +155,8 @@ function run( basePath, input ) {
 
 			retval.errors.push( ...filteredErrors );
 			retval.results.push( ...filteredPages );
+			retval.hits = filteredPages.length;
+			totalHits += retval.hits;
 
 		}
 
@@ -164,7 +167,7 @@ function run( basePath, input ) {
 
 	// outputStream.write( stringify( { errors: allErrors, results: allResults } ) );
 
-	return { errors: allErrors, results: allResults };
+	return { errors: allErrors, results: allResults, hits: totalHits };
 
 }
 

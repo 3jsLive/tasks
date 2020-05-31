@@ -150,10 +150,10 @@ class DependenciesParser {
 
 				}
 
-				// this.logger.debug( 'Found file:', mapResult.sourceFile.path );
-				// this.logger.debug( 'Looking for:', mapResult.sourceLine );
-				// this.logger.debug( 'Looking at index:', mapResult.sourceFile.text.indexOf( mapResult.sourceLine ) + mapResult.column );
-				// this.logger.debug( 'Originally:', range.startOffset );
+				this.logger.debug( 'Found file:', mapResult.sourceFile.path );
+				this.logger.debug( 'Looking for:', mapResult.sourceLine );
+				this.logger.debug( 'Looking at index:', mapResult.sourceFile.text.indexOf( mapResult.sourceLine ) + mapResult.column );
+				this.logger.debug( 'Originally:', range.startOffset );
 				const vrAST = this.astCache[ mapResult.sourceFile.path ];
 
 				// findNodeAt rarely causes issues, but findNodeAfter just works - maybe some extensive testing could settle it

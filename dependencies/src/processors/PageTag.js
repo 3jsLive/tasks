@@ -1,6 +1,7 @@
 const fDT = require( '../findDocTags' );
 const util = require( 'util' );
 const lister = require( 'listfiles' );
+const path = require( 'path' );
 
 const logger = require( 'signale' ).scope( 'processPageTags' );
 const cacheLogger = require( 'signale' ).scope( 'searchAndCache' );
@@ -120,7 +121,7 @@ module.exports = function processPageTags( list, { docFilename, docFilenameRelat
 
 			filepath = filepath.replace( /\/Polyfills\./, '/polyfills.' ); // override
 			const filepathRelative = filepath;
- 			filepath = basePath + filepath;
+			filepath = path.join( basePath, filepath );
 
 			const query = { regexDefault: false, type: 'property', search: { name: new RegExp( '^' + p.anchor + '$' ) } };
 
