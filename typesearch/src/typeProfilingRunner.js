@@ -158,12 +158,6 @@ class TypeProfilingRunner {
 									this.worker.run(),
 									this.skipper
 								] ) )
-								.then( foo => {
-
-									this.logger.star( { foo } );
-									return foo;
-
-								} )
 								.catch( err => this.logger.error( 'Worker failed to start', err ) );
 
 						} )
