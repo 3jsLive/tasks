@@ -14,14 +14,14 @@
 const Promise = require( 'bluebird' );
 const fs = require( 'fs' );
 const path = require( 'path' );
-const urlExists = require( 'url-exists-deep' );
+const axios = require( 'axios' ).default;
 const glob = require( 'glob' );
+const config = require( 'rc' )( '3cidev' );
 
 const BaseCheck = require( './BaseCheck' );
-const CacheMixin = require( './CacheMixin' );
 
 
-class CheckNonDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_NonDocs.json', BaseCheck ) {
+class CheckNonDocsForBrokenExternalLinks extends BaseCheck {
 
 	async generateListOfFiles() {
 
@@ -49,40 +49,24 @@ class CheckNonDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_NonDo
 
 	checkUrl( url ) {
 
-		if ( this.cacheEnabled === true && this.cache.get( url ) !== undefined )
-			return this.cache.get( url );
+		return axios.post( `${process.env.LINKCHECK_URL}/check`, {
+			token: process.env.LINKCHECK_TOKEN,
+			url: url
+		} )
+			.then( res => {
 
-		const result = urlExists( url, {
-			"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-			"accept-encoding": "gzip, deflate, br",
-			"accept-language": "en-US,en;q=0.9",
-			"cache-control": "no-cache",
-			"dnt": 1,
-			"pragma": "no-cache",
-			"upgrade-insecure-requests": 1,
-			"user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.80 Safari/537.36"
-		}, 'GET', 30000 )
-			.then( resp => {
+				this.logger.log( `URL ${url}: ${res.data.result}` );
 
-				if ( resp )
-					this.logger.debug( 'URL', url, 'exists' );
-				else
-					this.logger.debug( 'URL', url, 'does not exist' );
-
-				return resp;
+				return res.data.result;
 
 			} )
 			.catch( err => {
 
-				this.logger.error( 'URL check for', url, 'failed:', err );
+				this.logger.error( `URL check for ${url} failed: ${err}` );
+
 				return false;
 
 			} );
-
-		if ( this.cacheEnabled === true )
-			this.cache.put( url, result );
-
-		return result;
 
 	}
 
@@ -170,21 +154,6 @@ class CheckNonDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_NonDo
 
 
 		return Promise.all( checkedLinks )
-			.then( final => {
-
-				const cacheDump = final.reduce( ( all, entry ) => {
-
-					all.push( { url: entry.url, value: entry.response } );
-
-					return all;
-
-				}, [] );
-
-				this.replaceCache( cacheDump );
-
-				return final;
-
-			} )
 			.then( flattened => {
 
 				// filter out any results with online URLs or no errors

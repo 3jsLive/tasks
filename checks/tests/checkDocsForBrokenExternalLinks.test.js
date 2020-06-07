@@ -36,27 +36,12 @@ describe( `checkDocsForBrokenExternalLinks`, function () {
 
 		// analyze
 		const check = new checkClass( testBasePath, this.tempOut );
-		check.cacheDisable();
 		const result = await check.run();
 
 		// done
 		assert.deepStrictEqual( result, goldData );
 
 	} );
-
-	// it( 'basics - cache', async function () {
-
-	// 	this.timeout( 40000 );
-
-	// 	// analyze
-	// 	const check = new checkClass( testBasePath, this.tempOut );
-	// 	const result = await check.run();
-
-	// 	// done
-	// 	assert.deepStrictEqual( result, goldData );
-
-	// } );
-
 
 	it( 'worker error: no files found', function ( ) {
 
@@ -73,7 +58,6 @@ describe( `checkDocsForBrokenExternalLinks`, function () {
 
 		// analyze
 		const check = new checkClass( testBasePath, this.tempOut );
-		check.cacheDisable();
 
 		sinon.stub( check, 'checkUrl' )
 			.usingPromise( bluebird.Promise )
@@ -93,7 +77,6 @@ describe( `checkDocsForBrokenExternalLinks`, function () {
 
 		// analyze
 		const check = new checkClass( testBasePath, this.tempOut );
-		check.cacheDisable();
 
 		sinon.stub( bluebird, 'map' )
 			.rejects( 'PromiseMapRejection' );

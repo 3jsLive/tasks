@@ -36,7 +36,6 @@ describe( `checkNonDocsForBrokenExternalLinks`, function () {
 
 		// analyze
 		const check = new checkClass( testBasePath, this.tempOut );
-		check.cacheDisable();
 		const result = await check.run();
 
 		// done
@@ -59,7 +58,6 @@ describe( `checkNonDocsForBrokenExternalLinks`, function () {
 
 		// analyze
 		const check = new checkClass( testBasePath, this.tempOut );
-		check.cacheDisable();
 
 		sinon.stub( check, 'checkUrl' )
 			.usingPromise( bluebird.Promise )
@@ -79,7 +77,6 @@ describe( `checkNonDocsForBrokenExternalLinks`, function () {
 
 		// analyze
 		const check = new checkClass( testBasePath, this.tempOut );
-		check.cacheDisable();
 
 		sinon.stub( bluebird, 'map' )
 			.rejects( 'PromiseMapRejection' );

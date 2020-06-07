@@ -14,15 +14,15 @@
 const Promise = require( 'bluebird' );
 const fs = require( 'fs' );
 const path = require( 'path' );
-const urlExists = require( 'url-exists-deep' );
+const axios = require( 'axios' ).default;
 const dochandler = require( 'dochandler' );
 const glob = require( 'glob' );
+const config = require( 'rc' )( '3cidev' );
 
 const BaseCheck = require( './BaseCheck' );
-const CacheMixin = require( './CacheMixin' );
 
 
-class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.json', BaseCheck ) {
+class CheckDocsForBrokenExternalLinks extends BaseCheck {
 
 	generateListOfFiles() {
 
@@ -51,50 +51,24 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 
 	checkUrl( url ) {
 
-		if ( this.cacheEnabled === true && this.cache.get( url ) !== undefined ) {
+		return axios.post( `${process.env.LINKCHECK_URL}/check`, {
+			token: process.env.LINKCHECK_TOKEN,
+			url: url
+		} )
+			.then( res => {
 
-			this.logger.debug( 'Found', url, 'in cache:', this.cache.get( url ) );
+				this.logger.log( `URL ${url}: ${res.data.result}` );
 
-			return this.cache.get( url );
-
-		}
-
-		const result = urlExists( url, {
-			"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-			"accept-encoding": "gzip, deflate, br",
-			"accept-language": "en-US,en;q=0.9",
-			"cache-control": "no-cache",
-			"dnt": 1,
-			"pragma": "no-cache",
-			"upgrade-insecure-requests": 1,
-			"user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.80 Safari/537.36"
-		}, 'GET', 30000 )
-			.then( resp => {
-
-				if ( resp ) {
-
-					this.logger.debug( 'URL', url, 'exists' );
-
-				} else {
-
-					this.logger.debug( 'URL', url, 'does not exist' );
-
-				}
-
-				if ( this.cacheEnabled === true )
-					this.cache.put( url, resp );
-
-				return resp;
+				return res.data.result;
 
 			} )
 			.catch( err => {
 
-				this.logger.error( 'URL check for', url, 'failed:', err );
+				this.logger.error( `URL check for ${url} failed: ${err}` );
+
 				return false;
 
 			} );
-
-		return result;
 
 	}
 
@@ -157,7 +131,7 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 				return { file: linkObj.file.relative, url, response: true };
 
 			// return this.checkUrl( url )
-			return Promise.resolve( this.checkUrl( url ) )
+			return this.checkUrl( url )
 				.then( resp => {
 
 					if ( resp ) {
@@ -169,7 +143,6 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 					} else {
 
 						this.logger.debug( `ERR > ${url} (${linkObj.file.absolute}): ${!! resp}` );
-						this.logger.info( resp );
 
 						return { file: linkObj.file.relative, url: url, response: false };
 
@@ -195,21 +168,6 @@ class CheckDocsForBrokenExternalLinks extends CacheMixin( '__cache_dump_Docs.jso
 
 
 		return Promise.all( checkedLinks )
-			.then( final => {
-
-				const cacheDump = final.reduce( ( all, entry ) => {
-
-					all.push( { url: entry.url, value: entry.response } );
-
-					return all;
-
-				}, [] );
-
-				this.replaceCache( cacheDump );
-
-				return final;
-
-			} )
 			.then( flattened => {
 
 				// filter out any results with online URLs or no errors
