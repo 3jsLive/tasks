@@ -16,7 +16,6 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const axios = require( 'axios' ).default;
 const glob = require( 'glob' );
-const config = require( 'rc' )( '3cidev' );
 
 const BaseCheck = require( './BaseCheck' );
 
@@ -143,7 +142,7 @@ class CheckNonDocsForBrokenExternalLinks extends BaseCheck {
 
 				} );
 
-		}, { concurrency: 4 } )
+		}, { concurrency: 8 } )
 			.catch( err => {
 
 				this.logger.fatal( 'Promise.map failed:', err );
