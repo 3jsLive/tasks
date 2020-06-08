@@ -48,6 +48,9 @@ class CheckNonDocsForBrokenExternalLinks extends BaseCheck {
 
 	checkUrl( url ) {
 
+		if ( typeof this.cache[ url ] !== 'undefined' )
+			return this.cache[ url ];
+
 		return axios.post( `${process.env.LINKCHECK_URL}/check`, {
 			token: process.env.LINKCHECK_TOKEN,
 			url: url
@@ -56,12 +59,16 @@ class CheckNonDocsForBrokenExternalLinks extends BaseCheck {
 
 				this.logger.log( `URL ${url}: ${res.data.result}` );
 
+				this.cache[ url ] = res.data.result;
+
 				return res.data.result;
 
 			} )
 			.catch( err => {
 
 				this.logger.error( `URL check for ${url} failed: ${err}` );
+
+				this.cache[ url ] = false;
 
 				return false;
 
@@ -74,6 +81,9 @@ class CheckNonDocsForBrokenExternalLinks extends BaseCheck {
 
 		// file errors
 		const errors = {};
+
+		// crude cache
+		this.cache = {};
 
 		await this.generateListOfFiles();
 
