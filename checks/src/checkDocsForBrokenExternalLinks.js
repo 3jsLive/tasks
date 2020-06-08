@@ -48,33 +48,33 @@ class CheckDocsForBrokenExternalLinks extends BaseCheck {
 	}
 
 
-	checkUrl( url ) {
+	async checkUrl( url ) {
 
 		if ( typeof this.cache[ url ] !== 'undefined' )
 			return this.cache[ url ];
 
-		return axios.post( `${process.env.LINKCHECK_URL}/check`, {
-			token: process.env.LINKCHECK_TOKEN,
-			url: url
-		} )
-			.then( res => {
+		try {
 
-				this.logger.log( `URL ${url}: ${res.data.result}` );
-
-				this.cache[ url ] = res.data.result;
-
-				return res.data.result;
-
-			} )
-			.catch( err => {
-
-				this.logger.error( `URL check for ${url} failed: ${err}` );
-
-				this.cache[ url ] = false;
-
-				return false;
-
+			const response = await axios.post( `${process.env.LINKCHECK_URL}/check`, {
+				token: process.env.LINKCHECK_TOKEN,
+				url: url
 			} );
+
+			this.logger.log( `URL ${url}: ${response.data.result}` );
+
+			this.cache[ url ] = response.data.result;
+
+			return response.data.result;
+
+		} catch ( err ) {
+
+			this.logger.error( `URL check for ${url} failed: ${err}` );
+
+			this.cache[ url ] = false;
+
+			return false;
+
+		}
 
 	}
 
