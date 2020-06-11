@@ -31,7 +31,8 @@
 			"nearestneighbour", // has a tendency to crash the runner
 			"youtube",          // youtube messes with our network-idle detection
 			"offscreencanvas",  // offscreencanvas doesn't alwways work and needs a special flag anyway, plus it's not yet modularized
-			"buffergeometry_uint" // also crashes the runner
+			"buffergeometry_uint", // also crashes the runner
+			"webgl_lights_rectarealight" // takes ages, possibly because of a missing extension
 		],
 
 		// script files matching one or more of these are skipped as well, since they tax the profiler too much
@@ -65,7 +66,8 @@
 		"bannedExamples": [
 			"nearestneighbour", // has a tendency to crash the runner
 			"youtube",          // youtube messes with our network-idle detection
-			"offscreencanvas"   // offscreencanvas doesn't alwways work and needs a special flag anyway, plus it's not yet modularized
+			"offscreencanvas",   // offscreencanvas doesn't alwways work and needs a special flag anyway, plus it's not yet modularized
+			"webgl_lights_rectarealight" // takes ages, possibly because of non-existing extension
 		],
 
 		"fpsLimit": 300,
